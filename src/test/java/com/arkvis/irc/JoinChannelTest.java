@@ -2,9 +2,8 @@ package com.arkvis.irc;
 
 import com.arkvis.irc.model.Channel;
 import com.arkvis.irc.model.IRCClient;
-import com.arkvis.irc.testhelper.TestFailedChannelJoinEngine;
-import com.arkvis.irc.testhelper.TestResultHandler;
-import com.arkvis.irc.testhelper.TestSuccessfulChannelJoinEngine;
+import com.arkvis.irc.testengines.TestFailedJoinChannelEngine;
+import com.arkvis.irc.testengines.TestSuccessfulJoinChannelEngine;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +15,7 @@ class JoinChannelTest {
         String channelName = "TEST_CHANNEL";
         Channel channel = new Channel(channelName);
 
-        IRCClient ircClient = new IRCClient(new TestSuccessfulChannelJoinEngine(channel));
+        IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channel));
         TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
         ircClient.registerJoinChannelListener(resultHandler);
 
@@ -26,7 +25,7 @@ class JoinChannelTest {
 
     @Test
     void should_adviseOfError_when_joiningChannelFailed() {
-        IRCClient ircClient = new IRCClient(new TestFailedChannelJoinEngine());
+        IRCClient ircClient = new IRCClient(new TestFailedJoinChannelEngine());
         TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
         ircClient.registerJoinChannelListener(resultHandler);
 

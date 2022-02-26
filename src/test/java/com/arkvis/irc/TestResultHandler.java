@@ -1,4 +1,4 @@
-package com.arkvis.irc.testhelper;
+package com.arkvis.irc;
 
 import com.arkvis.irc.model.ResultHandler;
 

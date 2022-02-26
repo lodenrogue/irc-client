@@ -1,13 +1,11 @@
-package com.arkvis.irc.testhelper;
+package com.arkvis.irc.testengines;
 
-import com.arkvis.irc.model.Channel;
 import com.arkvis.irc.model.Connection;
-import com.arkvis.irc.model.Engine;
 import com.arkvis.irc.model.ResultHandler;
 
 import java.util.List;
 
-public class TestSuccessfulConnectionEngine implements Engine {
+public class TestSuccessfulConnectionEngine extends AbstractTestConnectionEngine {
 
     private final Connection connection;
 
@@ -18,10 +16,5 @@ public class TestSuccessfulConnectionEngine implements Engine {
     @Override
     public void connect(String serverName, List<String> nicks, ResultHandler<Connection> resultHandler) {
         resultHandler.onSuccess(connection);
-    }
-
-    @Override
-    public void joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
-
     }
 }

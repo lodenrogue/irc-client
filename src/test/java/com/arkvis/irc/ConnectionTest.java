@@ -2,9 +2,8 @@ package com.arkvis.irc;
 
 import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.IRCClient;
-import com.arkvis.irc.testhelper.TestFailedConnectionEngine;
-import com.arkvis.irc.testhelper.TestResultHandler;
-import com.arkvis.irc.testhelper.TestSuccessfulConnectionEngine;
+import com.arkvis.irc.testengines.TestFailedConnectionEngine;
+import com.arkvis.irc.testengines.TestSuccessfulConnectionEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
