@@ -7,19 +7,14 @@ import java.util.function.Consumer;
 
 public class TestChannelMessageEngine extends AbstractTestEngine {
 
-    private final ChannelEvent channelEvent;
     private Consumer<ChannelEvent> listener;
-
-    public TestChannelMessageEngine(ChannelEvent channelEvent) {
-        this.channelEvent = channelEvent;
-    }
 
     @Override
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
         this.listener = listener;
     }
 
-    public void sendChannelMessage() {
+    public void sendChannelMessage(ChannelEvent channelEvent) {
         this.listener.accept(channelEvent);
     }
 }

@@ -49,6 +49,11 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
+    public void sendMessage(String channelName, String message, ResultHandler<ChannelEvent> resultHandler) {
+        ircApi.message(channelName, message, createSendMessageCallback(channelName, resultHandler));
+    }
+
+    @Override
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
         ircApi.addListener(new VariousMessageListenerAdapter() {
             @Override
@@ -56,6 +61,12 @@ public class IRCCloudsEngine implements Engine {
                 listener.accept(toChannel(message));
             }
         });
+    }
+
+    private Callback<String> createSendMessageCallback(String channelName, ResultHandler<ChannelEvent> resultHandler) {
+        return createCallback(
+                message -> resultHandler.onSuccess(new ChannelEvent(channelName, null, message)),
+                resultHandler::onError);
     }
 
     private Callback<IRCChannel> createJoinChannelCallback(ResultHandler<ChannelEvent> resultHandler) {

@@ -130,7 +130,7 @@ public class ChatViewModel {
 
     private void updateChatText(String viewName, String sender, String message) {
         String currentText = chatViews.get(viewName);
-        String newText = String.format("%s%s: %s\n", currentText, sender, message);
+        String newText = String.format("%s%s : %s\n", currentText, sender, message);
         chatViews.put(viewName, newText);
 
         if (viewName.equals(currentChatView)) {

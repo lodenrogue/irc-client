@@ -10,4 +10,6 @@ public interface Engine {
     void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler);
 
     void addChannelMessageListener(Consumer<ChannelEvent> listener);
+
+    void sendMessage(String channelName, String message, ResultHandler<ChannelEvent> resultHandler);
 }

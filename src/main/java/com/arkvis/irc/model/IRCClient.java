@@ -9,12 +9,14 @@ public class IRCClient {
     private final List<ResultHandler<ConnectionEvent>> connectionListeners;
     private final List<ResultHandler<ChannelEvent>> joinChannelListeners;
     private final List<Consumer<ChannelEvent>> channelMessageListeners;
+    private final List<ResultHandler<ChannelEvent>> sendMessageListeners;
 
     public IRCClient(Engine engine) {
         this.engine = engine;
         connectionListeners = new ArrayList<>();
         joinChannelListeners = new ArrayList<>();
         channelMessageListeners = new ArrayList<>();
+        sendMessageListeners = new ArrayList<>();
 
         createChannelMessageListener();
     }
@@ -27,6 +29,10 @@ public class IRCClient {
         engine.joinChannel(channelName, createResultHandler(joinChannelListeners));
     }
 
+    public void sendMessage(String channelName, String message) {
+        engine.sendMessage(channelName, message, createResultHandler(sendMessageListeners));
+    }
+
     public void addConnectionListener(ResultHandler<ConnectionEvent> listener) {
         connectionListeners.add(listener);
     }
@@ -37,6 +43,10 @@ public class IRCClient {
 
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
         channelMessageListeners.add(listener);
+    }
+
+    public void addSendMessageListener(ResultHandler<ChannelEvent> listener) {
+        sendMessageListeners.add(listener);
     }
 
     private <T> ResultHandler<T> createResultHandler(List<ResultHandler<T>> listeners) {

@@ -24,4 +24,9 @@ public abstract class AbstractTestEngine implements Engine {
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
 
     }
+
+    @Override
+    public void sendMessage(String channelName, String message, ResultHandler<ChannelEvent> resultHandler) {
+
+    }
 }
