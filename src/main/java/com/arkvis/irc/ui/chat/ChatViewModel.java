@@ -1,5 +1,6 @@
 package com.arkvis.irc.ui.chat;
 
+import com.arkvis.irc.model.Channel;
 import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.ResultHandler;
@@ -9,6 +10,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class ChatViewModel {
     private final StringProperty chatText;
@@ -25,11 +27,21 @@ public class ChatViewModel {
     }
 
     public void init() {
-        appendToChatText("Connecting to server...");
-        ResultHandler<Connection> resultHandler = createConnectionResultHandler();
+        client.registerConnectionListener(createConnectionResultHandler());
+        client.registerJoinChannelListener(createJoinChannelResultHandler());
 
-        client.registerConnectionListener(resultHandler);
+        appendToChatText("Connecting to server...");
         client.connect("irc.libera.chat", Arrays.asList("nick", "altNick1", "altNick2"));
+    }
+
+    public void processUserInput() {
+        String input = userInput.getValue();
+        userInput.setValue("");
+
+        if (input.startsWith("/join ")) {
+            String[] inputSplit = input.split(" ");
+            client.joinChannel(inputSplit[1]);
+        }
     }
 
     public StringProperty getChatTextProperty() {
@@ -44,29 +56,34 @@ public class ChatViewModel {
         return nickName;
     }
 
+    private ResultHandler<Channel> createJoinChannelResultHandler() {
+        return createResultHandler(
+                this::onJoinChannelSuccess,
+                () -> appendToChatText("Error joining channel"));
+    }
+
     private ResultHandler<Connection> createConnectionResultHandler() {
+        return createResultHandler(
+                this::onConnectionSuccess,
+                () -> appendToChatText("Error connecting to server"));
+    }
+
+    private <T> ResultHandler<T> createResultHandler(Consumer<T> onSuccess, Runnable onError) {
         return new ResultHandler<>() {
             @Override
-            public void onSuccess(Connection connection) {
-                onConnectionSuccess(connection);
+            public void onSuccess(T t) {
+                onSuccess.accept(t);
             }
 
             @Override
             public void onError() {
-                appendToChatText("Error connecting to server");
+                onError.run();
             }
         };
     }
 
-    public void processUserInput() {
-//        String input = userInput.getValue();
-//        if (input.startsWith("/join ")) {
-//            String[] inputSplit = input.split(" ");
-//
-//            if (inputSplit.length > 1) {
-//                client.joinChannel(channel);
-//            }
-//        }
+    private void onJoinChannelSuccess(Channel channel) {
+        System.out.println("Joined channel " + channel.getName());
     }
 
     private void onConnectionSuccess(Connection connection) {
