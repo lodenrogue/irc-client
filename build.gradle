@@ -22,7 +22,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
-    implementation group: 'com.ircclouds.irc', name: 'irc-api', version: '1.0-0014'
+//    implementation group: 'com.ircclouds.irc', name: 'irc-api', version: '1.0-0014'
+    implementation group: 'org.jitsi', name: 'irc-api', version: '1.0-0015-jitsi-1'
+
 }
 
 test {

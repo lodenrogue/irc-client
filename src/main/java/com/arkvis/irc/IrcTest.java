@@ -125,6 +125,11 @@ public class IrcTest {
             }
 
             @Override
+            public void onClientError(ClientErrorMessage aMsg) {
+
+            }
+
+            @Override
             public void onChannelMode(ChannelModeMessage aMsg) {
 
             }
@@ -145,6 +150,11 @@ public class IrcTest {
 
             @Override
             public void onServerPing(ServerPing aMsg) {
+
+            }
+
+            @Override
+            public void onUserAway(AwayMessage aMsg) {
 
             }
 

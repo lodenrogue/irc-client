@@ -88,16 +88,7 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private ChannelEvent toChannel(ChannelPrivMsg message) {
-        String text = getText(message);
-        return new ChannelEvent(message.getChannelName(), text);
-    }
-
-    private String getText(ChannelPrivMsg message) {
-        String originalText = message.getText();
-        System.out.println(originalText);
-        List<String> textParts = List.of(originalText.split(" "));
-        String messageText = String.join(" ", textParts.subList(3, textParts.size()));
-        return messageText.substring(1);
+        return new ChannelEvent(message.getChannelName(), message.getText());
     }
 
     private ConnectionEvent toConnection(IIRCState state) {
