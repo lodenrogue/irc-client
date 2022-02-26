@@ -1,16 +1,20 @@
 package com.arkvis.irc.ui.channels;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ChannelsView implements Initializable {
 
     @FXML
-    private ListView<String> servers;
+    private ListView<String> serversList;
 
     private final ChannelsViewModel viewModel;
 
@@ -20,10 +24,15 @@ public class ChannelsView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        bindViewModel();
+        viewModel.addServersChangeListener(this::updateServers);
     }
 
-    private void bindViewModel() {
-        servers.setItems(viewModel.getServers());
+    private void updateServers(List<Server> servers) {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for (Server server : servers) {
+            items.add(server.getName());
+            items.addAll(server.getChannels());
+        }
+        Platform.runLater(() -> serversList.setItems(items));
     }
 }

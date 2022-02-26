@@ -5,12 +5,12 @@ import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.ui.IRC;
+import com.arkvis.irc.ui.SimpleResultHandler;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 public class ChatViewModel {
     private final StringProperty chatText;
@@ -57,29 +57,15 @@ public class ChatViewModel {
     }
 
     private ResultHandler<Channel> createJoinChannelResultHandler() {
-        return createResultHandler(
+        return new SimpleResultHandler<>(
                 this::onJoinChannelSuccess,
                 () -> appendToChatText("Error joining channel"));
     }
 
     private ResultHandler<Connection> createConnectionResultHandler() {
-        return createResultHandler(
+        return new SimpleResultHandler<>(
                 this::onConnectionSuccess,
                 () -> appendToChatText("Error connecting to server"));
-    }
-
-    private <T> ResultHandler<T> createResultHandler(Consumer<T> onSuccess, Runnable onError) {
-        return new ResultHandler<>() {
-            @Override
-            public void onSuccess(T t) {
-                onSuccess.accept(t);
-            }
-
-            @Override
-            public void onError() {
-                onError.run();
-            }
-        };
     }
 
     private void onJoinChannelSuccess(Channel channel) {
