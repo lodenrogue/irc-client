@@ -11,6 +11,7 @@ import com.ircclouds.irc.api.domain.IRCChannel;
 import com.ircclouds.irc.api.state.IIRCState;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class IRCCloudsEngine implements Engine {
     private static final String REAL_NAME = "IRC Api";
@@ -45,38 +46,36 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private Callback<IRCChannel> createJoinChannelCallback(ResultHandler<Channel> resultHandler) {
+        return createCallback(
+                ircChannel -> resultHandler.onSuccess(toChannel(ircChannel)),
+                resultHandler::onError);
+    }
+
+    private Callback<IIRCState> createConnectCallback(ResultHandler<Connection> resultHandler) {
+        return createCallback(
+                state -> resultHandler.onSuccess(toConnection(state)),
+                resultHandler::onError);
+    }
+
+    private <T> Callback<T> createCallback(Consumer<T> onSuccess, Runnable onError) {
         return new Callback<>() {
             @Override
-            public void onSuccess(IRCChannel ircChannel) {
-                resultHandler.onSuccess(toChannel(ircChannel));
+            public void onSuccess(T t) {
+                onSuccess.accept(t);
             }
 
             @Override
             public void onFailure(Exception exception) {
-                resultHandler.onError();
-            }
-
-            private Channel toChannel(IRCChannel ircChannel) {
-                return new Channel(ircChannel.getName());
+                onError.run();
             }
         };
     }
 
-    private Callback<IIRCState> createConnectCallback(ResultHandler<Connection> resultHandler) {
-        return new Callback<>() {
-            @Override
-            public void onSuccess(IIRCState state) {
-                resultHandler.onSuccess(toConnection(state));
-            }
+    private Channel toChannel(IRCChannel ircChannel) {
+        return new Channel(ircChannel.getName());
+    }
 
-            @Override
-            public void onFailure(Exception ex) {
-                resultHandler.onError();
-            }
-
-            private Connection toConnection(IIRCState state) {
-                return new Connection(state.getNickname(), state.getServer().getHostname());
-            }
-        };
+    private Connection toConnection(IIRCState state) {
+        return new Connection(state.getNickname(), state.getServer().getHostname());
     }
 }
