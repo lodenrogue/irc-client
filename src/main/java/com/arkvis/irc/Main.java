@@ -17,6 +17,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(fxmlLoader.load(), 10_000, 10_000);
         stage.setScene(scene);
+        stage.setOnCloseRequest(event -> System.exit(0));
         stage.show();
     }
 
