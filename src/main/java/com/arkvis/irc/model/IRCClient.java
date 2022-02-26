@@ -2,16 +2,21 @@ package com.arkvis.irc.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class IRCClient {
     private final Engine engine;
-    private final List<ResultHandler<Connection>> connectionListeners;
-    private final List<ResultHandler<Channel>> joinChannelListeners;
+    private final List<ResultHandler<ConnectionEvent>> connectionListeners;
+    private final List<ResultHandler<ChannelEvent>> joinChannelListeners;
+    private final List<Consumer<ChannelEvent>> channelMessageListeners;
 
     public IRCClient(Engine engine) {
         this.engine = engine;
         connectionListeners = new ArrayList<>();
         joinChannelListeners = new ArrayList<>();
+        channelMessageListeners = new ArrayList<>();
+
+        createChannelMessageListener();
     }
 
     public void connect(String serverName, List<String> nicks) {
@@ -22,12 +27,16 @@ public class IRCClient {
         engine.joinChannel(channelName, createResultHandler(joinChannelListeners));
     }
 
-    public void registerConnectionListener(ResultHandler<Connection> listener) {
+    public void addConnectionListener(ResultHandler<ConnectionEvent> listener) {
         connectionListeners.add(listener);
     }
 
-    public void registerJoinChannelListener(ResultHandler<Channel> listener) {
+    public void addJoinChannelListener(ResultHandler<ChannelEvent> listener) {
         joinChannelListeners.add(listener);
+    }
+
+    public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
+        channelMessageListeners.add(listener);
     }
 
     private <T> ResultHandler<T> createResultHandler(List<ResultHandler<T>> listeners) {
@@ -42,5 +51,13 @@ public class IRCClient {
                 listeners.forEach(ResultHandler::onError);
             }
         };
+    }
+
+    private void createChannelMessageListener() {
+        engine.addChannelMessageListener(this::notifyChannelMessageListeners);
+    }
+
+    private void notifyChannelMessageListeners(ChannelEvent channelEvent) {
+        channelMessageListeners.forEach(listener -> listener.accept(channelEvent));
     }
 }

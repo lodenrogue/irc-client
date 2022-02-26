@@ -1,7 +1,7 @@
 package com.arkvis.irc.ui.chat;
 
-import com.arkvis.irc.model.Channel;
-import com.arkvis.irc.model.Connection;
+import com.arkvis.irc.model.ChannelEvent;
+import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.ui.EventEmitter;
@@ -38,8 +38,8 @@ public class ChatViewModel {
     }
 
     public void init() {
-        client.registerConnectionListener(createConnectionResultHandler());
-        client.registerJoinChannelListener(createJoinChannelResultHandler());
+        client.addConnectionListener(createConnectionResultHandler());
+        client.addJoinChannelListener(createJoinChannelResultHandler());
 
         eventEmitter.registerSelectViewListener(this::changeToView);
         connectToServer();
@@ -76,20 +76,20 @@ public class ChatViewModel {
         client.connect(serverName, Arrays.asList("nick", "altNick1", "altNick2"));
     }
 
-    private ResultHandler<Channel> createJoinChannelResultHandler() {
+    private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
         return new SimpleResultHandler<>(
                 this::onJoinChannelSuccess,
                 () -> updateChatText("Error joining channel"));
     }
 
-    private ResultHandler<Connection> createConnectionResultHandler() {
+    private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
         return new SimpleResultHandler<>(
                 this::onConnectionSuccess,
                 () -> updateChatText("Error connecting to server"));
     }
 
-    private void onJoinChannelSuccess(Channel channel) {
-        String channelName = channel.getName();
+    private void onJoinChannelSuccess(ChannelEvent channelEvent) {
+        String channelName = channelEvent.getName();
         chatViews.putIfAbsent(channelName, "");
         currentChatView = channelName;
 
@@ -97,14 +97,14 @@ public class ChatViewModel {
         updateChatText(message);
     }
 
-    private void onConnectionSuccess(Connection connection) {
-        String serverName = connection.getServerName();
+    private void onConnectionSuccess(ConnectionEvent connectionEvent) {
+        String serverName = connectionEvent.getServerName();
         chatViews.putIfAbsent(serverName, "");
         currentChatView = serverName;
 
         String message = String.format("Successfully connected to %s", serverName);
         updateChatText(message);
-        updateNickName(connection.getNickName());
+        updateNickName(connectionEvent.getNickName());
     }
 
     private void changeToView(String viewName) {
@@ -121,12 +121,6 @@ public class ChatViewModel {
         String currentText = chatViews.get(currentChatView);
         String newText = String.format("%s%s\n", currentText, message);
         chatViews.put(currentChatView, newText);
-        Platform.runLater(() -> chatText.setValue(newText));
-    }
-
-    private void appendToChatText(String message) {
-        String currentText = chatText.getValue();
-        String newText = String.format("%s%s\n", currentText, message);
         Platform.runLater(() -> chatText.setValue(newText));
     }
 }

@@ -1,13 +1,15 @@
 package com.arkvis.irc.ircclouds;
 
-import com.arkvis.irc.model.Channel;
-import com.arkvis.irc.model.Connection;
+import com.arkvis.irc.model.ChannelEvent;
+import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.Engine;
 import com.arkvis.irc.model.ResultHandler;
 import com.ircclouds.irc.api.Callback;
 import com.ircclouds.irc.api.IRCApi;
 import com.ircclouds.irc.api.IRCApiImpl;
 import com.ircclouds.irc.api.domain.IRCChannel;
+import com.ircclouds.irc.api.domain.messages.ChannelPrivMsg;
+import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
-    public void connect(String serverName, List<String> nicks, ResultHandler<Connection> resultHandler) {
+    public void connect(String serverName, List<String> nicks, ResultHandler<ConnectionEvent> resultHandler) {
         String primaryNick = nicks.get(0);
         List<String> altNicks = nicks.subList(1, nicks.size());
 
@@ -41,17 +43,27 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
-    public void joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
+    public void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler) {
         ircApi.joinChannel(channelName, createJoinChannelCallback(resultHandler));
     }
 
-    private Callback<IRCChannel> createJoinChannelCallback(ResultHandler<Channel> resultHandler) {
+    @Override
+    public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onChannelMessage(ChannelPrivMsg message) {
+                listener.accept(toChannel(message));
+            }
+        });
+    }
+
+    private Callback<IRCChannel> createJoinChannelCallback(ResultHandler<ChannelEvent> resultHandler) {
         return createCallback(
                 ircChannel -> resultHandler.onSuccess(toChannel(ircChannel)),
                 resultHandler::onError);
     }
 
-    private Callback<IIRCState> createConnectCallback(ResultHandler<Connection> resultHandler) {
+    private Callback<IIRCState> createConnectCallback(ResultHandler<ConnectionEvent> resultHandler) {
         return createCallback(
                 state -> resultHandler.onSuccess(toConnection(state)),
                 resultHandler::onError);
@@ -71,11 +83,15 @@ public class IRCCloudsEngine implements Engine {
         };
     }
 
-    private Channel toChannel(IRCChannel ircChannel) {
-        return new Channel(ircChannel.getName());
+    private ChannelEvent toChannel(IRCChannel ircChannel) {
+        return new ChannelEvent(ircChannel.getName(), null);
     }
 
-    private Connection toConnection(IIRCState state) {
-        return new Connection(state.getNickname(), state.getServer().getHostname());
+    private ChannelEvent toChannel(ChannelPrivMsg message) {
+        return new ChannelEvent(message.getChannelName(), message.getText());
+    }
+
+    private ConnectionEvent toConnection(IIRCState state) {
+        return new ConnectionEvent(state.getNickname(), state.getServer().getHostname());
     }
 }

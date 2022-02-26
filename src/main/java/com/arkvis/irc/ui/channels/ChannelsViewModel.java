@@ -1,7 +1,7 @@
 package com.arkvis.irc.ui.channels;
 
-import com.arkvis.irc.model.Channel;
-import com.arkvis.irc.model.Connection;
+import com.arkvis.irc.model.ChannelEvent;
+import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
@@ -22,8 +22,8 @@ public class ChannelsViewModel {
         servers = new ArrayList<>();
         listeners = new ArrayList<>();
 
-        IRC.getClient().registerConnectionListener(createConnectionResultHandler());
-        IRC.getClient().registerJoinChannelListener(createJoinChannelResultHandler());
+        IRC.getClient().addConnectionListener(createConnectionResultHandler());
+        IRC.getClient().addJoinChannelListener(createJoinChannelResultHandler());
     }
 
     public void addServersChangeListener(Consumer<List<Server>> listener) {
@@ -34,26 +34,26 @@ public class ChannelsViewModel {
         EventEmitter.getInstance().emitSelectViewEvent(viewName);
     }
 
-    private ResultHandler<Connection> createConnectionResultHandler() {
+    private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
         return new SimpleResultHandler<>(this::onConnectionSuccessful, () -> {
         });
     }
 
-    private ResultHandler<Channel> createJoinChannelResultHandler() {
+    private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
         return new SimpleResultHandler<>(this::onJoinChannelSuccess, () -> {
         });
     }
 
-    private void onConnectionSuccessful(Connection connection) {
-        Server server = new Server(connection.getServerName());
+    private void onConnectionSuccessful(ConnectionEvent connectionEvent) {
+        Server server = new Server(connectionEvent.getServerName());
         servers.add(server);
         currentServer = server;
         updateListeners();
     }
 
-    private void onJoinChannelSuccess(Channel channel) {
+    private void onJoinChannelSuccess(ChannelEvent channelEvent) {
         if (Objects.nonNull(currentServer)) {
-            currentServer.addChannel(channel.getName());
+            currentServer.addChannel(channelEvent.getName());
             updateListeners();
         }
     }

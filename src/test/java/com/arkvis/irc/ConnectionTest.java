@@ -1,9 +1,9 @@
 package com.arkvis.irc;
 
-import com.arkvis.irc.model.Connection;
+import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.IRCClient;
-import com.arkvis.irc.testengines.TestFailedConnectionEngine;
-import com.arkvis.irc.testengines.TestSuccessfulConnectionEngine;
+import com.arkvis.irc.testengines.connection.TestFailedConnectionEngine;
+import com.arkvis.irc.testengines.connection.TestSuccessfulConnectionEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,23 +22,22 @@ class ConnectionTest {
 
     @Test
     void should_returnCorrectServerName_when_connectingSuccessfully() {
-        Connection connection = new Connection("nick1", serverName);
-        IRCClient client = new IRCClient(new TestSuccessfulConnectionEngine(connection));
+        ConnectionEvent connectionEvent = new ConnectionEvent("nick1", serverName);
+        IRCClient client = new IRCClient(new TestSuccessfulConnectionEngine(connectionEvent));
 
-        TestResultHandler<Connection> resultHandler = new TestResultHandler<>();
-        client.registerConnectionListener(resultHandler);
+        TestResultHandler<ConnectionEvent> resultHandler = new TestResultHandler<>();
+        client.addConnectionListener(resultHandler);
 
         client.connect(serverName, List.of("nick1", "nick2"));
-        assertEquals(connection.getServerName(), resultHandler.getAccepted().getServerName());
+        assertEquals(connectionEvent.getServerName(), resultHandler.getAccepted().getServerName());
         assertFalse(resultHandler.wasOnErrorCalled());
     }
 
     @Test
     void should_adviseOfError_when_connectionFailed() {
-
         IRCClient client = new IRCClient(new TestFailedConnectionEngine());
-        TestResultHandler<Connection> resultHandler = new TestResultHandler<>();
-        client.registerConnectionListener(resultHandler);
+        TestResultHandler<ConnectionEvent> resultHandler = new TestResultHandler<>();
+        client.addConnectionListener(resultHandler);
 
         client.connect(serverName, List.of("nick1", "nick2"));
         assertTrue(resultHandler.wasOnErrorCalled());
@@ -48,11 +47,11 @@ class ConnectionTest {
     @Test
     void should_returnCorrectNickName_when_connectingSuccessfully() {
         String nickName = "TEST_NICK";
-        Connection connection = new Connection(nickName, serverName);
+        ConnectionEvent connectionEvent = new ConnectionEvent(nickName, serverName);
 
-        IRCClient client = new IRCClient(new TestSuccessfulConnectionEngine(connection));
-        TestResultHandler<Connection> resultHandler = new TestResultHandler<>();
-        client.registerConnectionListener(resultHandler);
+        IRCClient client = new IRCClient(new TestSuccessfulConnectionEngine(connectionEvent));
+        TestResultHandler<ConnectionEvent> resultHandler = new TestResultHandler<>();
+        client.addConnectionListener(resultHandler);
 
         client.connect(serverName, List.of(nickName, "nick2"));
         assertEquals(nickName, resultHandler.getAccepted().getNickName());

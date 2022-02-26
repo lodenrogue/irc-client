@@ -8,6 +8,7 @@ import com.ircclouds.irc.api.domain.IRCServer;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.IVariousMessageListener;
+import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
 
 import java.util.Arrays;
@@ -29,6 +30,13 @@ public class IrcTest {
             public void onFailure(Exception aExc) {
                 throw new RuntimeException(aExc);
 
+            }
+        });
+
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onChannelMessage(ChannelPrivMsg aMsg) {
+                super.onChannelMessage(aMsg);
             }
         });
 
