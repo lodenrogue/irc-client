@@ -1,4 +1,4 @@
-package com.arkvis.irc;
+package com.arkvis.irc.testhelper;
 
 import java.util.function.Consumer;
 

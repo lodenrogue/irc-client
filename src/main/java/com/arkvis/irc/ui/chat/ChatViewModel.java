@@ -58,6 +58,17 @@ public class ChatViewModel {
         };
     }
 
+    public void processUserInput() {
+//        String input = userInput.getValue();
+//        if (input.startsWith("/join ")) {
+//            String[] inputSplit = input.split(" ");
+//
+//            if (inputSplit.length > 1) {
+//                client.joinChannel(channel);
+//            }
+//        }
+    }
+
     private void onConnectionSuccess(Connection connection) {
         String message = String.format("Successfully connected to %s", connection.getServerName());
         appendToChatText(message);

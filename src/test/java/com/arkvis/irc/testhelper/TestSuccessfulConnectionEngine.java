@@ -1,11 +1,11 @@
-package com.arkvis.irc;
+package com.arkvis.irc.testhelper;
 
+import com.arkvis.irc.model.Channel;
 import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.Engine;
 import com.arkvis.irc.model.ResultHandler;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TestSuccessfulConnectionEngine implements Engine {
 
@@ -16,12 +16,12 @@ public class TestSuccessfulConnectionEngine implements Engine {
     }
 
     @Override
-    public void connect(String serverName, List<String> nicks, Consumer<Connection> onSuccess, Runnable onError) {
-        onSuccess.accept(connection);
+    public void connect(String serverName, List<String> nicks, ResultHandler<Connection> resultHandler) {
+        resultHandler.onSuccess(connection);
     }
 
     @Override
-    public void connect(String serverName, List<String> nicks, ResultHandler<Connection> resultHandler) {
-        resultHandler.onSuccess(connection);
+    public void joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
+
     }
 }

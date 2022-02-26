@@ -1,11 +1,12 @@
-package com.arkvis.irc;
+package com.arkvis.irc.testhelper;
 
 import com.arkvis.irc.model.ResultHandler;
+
+import java.util.Objects;
 
 public class TestResultHandler<T> implements ResultHandler<T> {
     private T accepted;
     private boolean onErrorCalled;
-    private boolean onSuccessCalled;
 
     @Override
     public void onSuccess(T t) {
@@ -26,6 +27,6 @@ public class TestResultHandler<T> implements ResultHandler<T> {
     }
 
     public boolean wasOnSuccessCalled() {
-        return onSuccessCalled;
+        return Objects.nonNull(accepted);
     }
 }
