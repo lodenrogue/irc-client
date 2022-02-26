@@ -1,6 +1,7 @@
 package com.arkvis.irc.ui.channels;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,6 +26,11 @@ public class ChannelsView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         viewModel.addServersChangeListener(this::updateServers);
+        serversList.getSelectionModel().selectedItemProperty().addListener(createSelectItemListener());
+    }
+
+    private ChangeListener<String> createSelectItemListener() {
+        return (observable, oldValue, newValue) -> viewModel.selectView(newValue);
     }
 
     private void updateServers(List<Server> servers) {

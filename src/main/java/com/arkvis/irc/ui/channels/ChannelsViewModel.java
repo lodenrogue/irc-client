@@ -3,6 +3,7 @@ package com.arkvis.irc.ui.channels;
 import com.arkvis.irc.model.Channel;
 import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
 import com.arkvis.irc.ui.SimpleResultHandler;
 
@@ -27,6 +28,10 @@ public class ChannelsViewModel {
 
     public void addServersChangeListener(Consumer<List<Server>> listener) {
         listeners.add(listener);
+    }
+
+    public void selectView(String viewName) {
+        EventEmitter.getInstance().emitSelectViewEvent(viewName);
     }
 
     private ResultHandler<Connection> createConnectionResultHandler() {
