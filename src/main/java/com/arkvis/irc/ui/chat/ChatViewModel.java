@@ -83,7 +83,8 @@ public class ChatViewModel {
     }
 
     private void onJoinChannelSuccess(Channel channel) {
-        System.out.println("Joined channel " + channel.getName());
+        String message = String.format("Successfully joined channel %s", channel.getName());
+        appendToChatText(message);
     }
 
     private void onConnectionSuccess(Connection connection) {
