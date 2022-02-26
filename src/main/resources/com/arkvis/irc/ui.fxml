@@ -23,7 +23,7 @@
                   <fx:include prefWidth="100.0" source="channels.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane prefWidth="200.0" GridPane.columnIndex="1">
+            <AnchorPane GridPane.columnIndex="1">
                <children>
                   <fx:include source="chat.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
