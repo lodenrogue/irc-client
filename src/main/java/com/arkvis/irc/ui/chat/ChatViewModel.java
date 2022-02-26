@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ChatViewModel {
+    private static final String SERVER_SENDER = "*";
+
     private final Map<String, String> chatViews;
     private String currentChatView;
 
@@ -74,24 +76,27 @@ public class ChatViewModel {
         chatViews.put(serverName, "");
         currentChatView = serverName;
 
-        updateChatText(currentChatView, "Connecting to server...");
+        updateChatText(currentChatView, SERVER_SENDER, "Connecting to server...");
         client.connect(serverName, Arrays.asList("nick", "altNick1", "altNick2"));
     }
 
     private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
         return new SimpleResultHandler<>(
                 this::onJoinChannelSuccess,
-                () -> updateChatText(currentChatView, "Error joining channel"));
+                () -> updateChatText(currentChatView, SERVER_SENDER, "Error joining channel"));
     }
 
     private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
         return new SimpleResultHandler<>(
                 this::onConnectionSuccess,
-                () -> updateChatText(currentChatView, "Error connecting to server"));
+                () -> updateChatText(currentChatView, SERVER_SENDER, "Error connecting to server"));
     }
 
     private Consumer<ChannelEvent> createChannelMessageListener() {
-        return channelEvent -> updateChatText(channelEvent.getName(), channelEvent.getMessage());
+        return channelEvent -> updateChatText(
+                channelEvent.getName(),
+                channelEvent.getSender(),
+                channelEvent.getMessage());
     }
 
     private void onJoinChannelSuccess(ChannelEvent channelEvent) {
@@ -100,7 +105,7 @@ public class ChatViewModel {
         currentChatView = channelName;
 
         String message = String.format("Successfully joined channel %s", channelName);
-        updateChatText(currentChatView, message);
+        updateChatText(currentChatView, SERVER_SENDER, message);
     }
 
     private void onConnectionSuccess(ConnectionEvent connectionEvent) {
@@ -109,7 +114,7 @@ public class ChatViewModel {
         currentChatView = serverName;
 
         String message = String.format("Successfully connected to %s", serverName);
-        updateChatText(currentChatView, message);
+        updateChatText(currentChatView, SERVER_SENDER, message);
         updateNickName(connectionEvent.getNickName());
     }
 
@@ -123,9 +128,9 @@ public class ChatViewModel {
         Platform.runLater(() -> nickName.setValue(newName));
     }
 
-    private void updateChatText(String viewName, String message) {
+    private void updateChatText(String viewName, String sender, String message) {
         String currentText = chatViews.get(viewName);
-        String newText = String.format("%s%s\n", currentText, message);
+        String newText = String.format("%s%s: %s\n", currentText, sender, message);
         chatViews.put(viewName, newText);
 
         if (viewName.equals(currentChatView)) {

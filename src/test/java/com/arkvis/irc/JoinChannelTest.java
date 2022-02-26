@@ -13,7 +13,7 @@ class JoinChannelTest {
     @Test
     void should_returnCorrectChannelName_when_successfullyJoiningChannel() {
         String channelName = "TEST_CHANNEL";
-        ChannelEvent channelEvent = new ChannelEvent(channelName, null);
+        ChannelEvent channelEvent = new ChannelEvent(channelName, null, null);
 
         IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
         TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();

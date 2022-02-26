@@ -8,6 +8,7 @@ import com.ircclouds.irc.api.Callback;
 import com.ircclouds.irc.api.IRCApi;
 import com.ircclouds.irc.api.IRCApiImpl;
 import com.ircclouds.irc.api.domain.IRCChannel;
+import com.ircclouds.irc.api.domain.IRCUser;
 import com.ircclouds.irc.api.domain.messages.ChannelPrivMsg;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
@@ -84,11 +85,13 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private ChannelEvent toChannel(IRCChannel ircChannel) {
-        return new ChannelEvent(ircChannel.getName(), null);
+        return new ChannelEvent(ircChannel.getName(), null, null);
     }
 
     private ChannelEvent toChannel(ChannelPrivMsg message) {
-        return new ChannelEvent(message.getChannelName(), message.getText());
+        IRCUser sender = message.getSource();
+        String senderNick = sender.getNick();
+        return new ChannelEvent(message.getChannelName(), senderNick, message.getText());
     }
 
     private ConnectionEvent toConnection(IIRCState state) {
