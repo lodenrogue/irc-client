@@ -15,6 +15,7 @@ import com.ircclouds.irc.api.state.IIRCState;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class IRCCloudsEngine implements Engine {
     private static final String REAL_NAME = "IRC Api";
@@ -96,7 +97,11 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private ChannelEvent toChannel(IRCChannel ircChannel) {
-        return new ChannelEvent(ircChannel.getName(), null, null);
+        List<String> users = ircChannel.getUsers().stream()
+                .map(IRCUser::getNick)
+                .collect(Collectors.toList());
+
+        return new ChannelEvent(ircChannel.getName(), users, null, null);
     }
 
     private ChannelEvent toChannel(ChannelPrivMsg message) {
