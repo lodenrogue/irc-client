@@ -44,6 +44,8 @@ public class ChatViewModel {
         client.addConnectionListener(createConnectionResultHandler());
         client.addJoinChannelListener(createJoinChannelResultHandler());
         client.addChannelMessageListener(createChannelMessageListener());
+        client.addSendMessageListener(createSendMessageResultHandler());
+
 
         eventEmitter.registerSelectViewListener(this::changeToView);
         connectToServer();
@@ -56,6 +58,8 @@ public class ChatViewModel {
         if (input.startsWith("/join ")) {
             String[] inputSplit = input.split(" ");
             client.joinChannel(inputSplit[1]);
+        } else {
+            client.sendMessage(currentChatView, input);
         }
     }
 
@@ -80,6 +84,12 @@ public class ChatViewModel {
         client.connect(serverName, Arrays.asList("nick", "altNick1", "altNick2"));
     }
 
+    private ResultHandler<ChannelEvent> createSendMessageResultHandler() {
+        return new SimpleResultHandler<>(
+                this::onSendMessageSuccess,
+                () -> updateChatText(currentChatView, SERVER_SENDER, "Error sending message"));
+    }
+
     private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
         return new SimpleResultHandler<>(
                 this::onJoinChannelSuccess,
@@ -97,6 +107,10 @@ public class ChatViewModel {
                 channelEvent.getName(),
                 channelEvent.getSender(),
                 channelEvent.getMessage());
+    }
+
+    private void onSendMessageSuccess(ChannelEvent channelEvent) {
+        updateChatText(channelEvent.getName(), nickName.getValue(), channelEvent.getMessage());
     }
 
     private void onJoinChannelSuccess(ChannelEvent channelEvent) {
