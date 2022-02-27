@@ -7,7 +7,7 @@ public interface Engine {
 
     void connect(String serverName, List<String> nicks, ResultHandler<ConnectionEvent> resultHandler);
 
-    void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler);
+    void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler);
 
     void addChannelMessageListener(Consumer<MessageEvent> listener);
 

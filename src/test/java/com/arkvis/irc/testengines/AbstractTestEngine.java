@@ -13,7 +13,7 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
-    public void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler) {
+    public void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler) {
 
     }
 

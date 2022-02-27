@@ -1,18 +1,18 @@
 package com.arkvis.irc.testengines.joinchannel;
 
-import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.testengines.AbstractTestEngine;
 
 public class TestSuccessfulJoinChannelEngine extends AbstractTestEngine {
-    private final ChannelEvent channelEvent;
+    private final UserJoinEvent joinEvent;
 
-    public TestSuccessfulJoinChannelEngine(ChannelEvent channelEvent) {
-        this.channelEvent = channelEvent;
+    public TestSuccessfulJoinChannelEngine(UserJoinEvent joinEvent) {
+        this.joinEvent = joinEvent;
     }
 
     @Override
-    public void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler) {
-        resultHandler.onSuccess(channelEvent);
+    public void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler) {
+        resultHandler.onSuccess(joinEvent);
     }
 }

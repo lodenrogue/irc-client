@@ -1,7 +1,7 @@
 package com.arkvis.irc;
 
-import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.IRCClient;
+import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.testengines.joinchannel.TestFailedJoinChannelEngine;
 import com.arkvis.irc.testengines.joinchannel.TestSuccessfulJoinChannelEngine;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,32 +14,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserJoinChannelTest {
 
     private String channelName;
+    private List<String> users;
 
     @BeforeEach
     void setUp() {
         channelName = "TEST_CHANNEL";
+        users = List.of("Tom", "Sally", "Tami");
     }
 
     @Test
     void should_returnCorrectChannelName_when_successfullyJoiningChannel() {
-        ChannelEvent channelEvent = new ChannelEvent(channelName, null, null);
+        UserJoinEvent joinEvent = new UserJoinEvent(channelName, users);
 
-        IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
-        TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
+        IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(joinEvent));
+        TestResultHandler<UserJoinEvent> resultHandler = new TestResultHandler<>();
         ircClient.addUserJoinChannelListener(resultHandler);
 
         ircClient.joinChannel(channelName);
-        assertEquals(channelName, resultHandler.getAccepted().getName());
+        assertEquals(channelName, resultHandler.getAccepted().getChannelName());
     }
 
     @Test
     void should_returnUsersList_when_successfullyJoiningChannel() {
-        List<String> users = List.of("Tom", "Sally", "Tami");
+        UserJoinEvent joinEvent = new UserJoinEvent(channelName, users);
+        IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(joinEvent));
 
-        ChannelEvent channelEvent = new ChannelEvent(channelName, users, null);
-
-        IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
-        TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
+        TestResultHandler<UserJoinEvent> resultHandler = new TestResultHandler<>();
         ircClient.addUserJoinChannelListener(resultHandler);
 
         ircClient.joinChannel(channelName);
@@ -49,10 +49,10 @@ class UserJoinChannelTest {
     @Test
     void should_adviseOfError_when_joiningChannelFailed() {
         IRCClient ircClient = new IRCClient(new TestFailedJoinChannelEngine());
-        TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
+        TestResultHandler<UserJoinEvent> resultHandler = new TestResultHandler<>();
         ircClient.addUserJoinChannelListener(resultHandler);
 
-        ircClient.joinChannel("test123");
+        ircClient.joinChannel(channelName);
         assertFalse(resultHandler.wasOnSuccessCalled());
         assertTrue(resultHandler.wasOnErrorCalled());
     }

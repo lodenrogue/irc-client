@@ -1,8 +1,8 @@
 package com.arkvis.irc.ui.channels;
 
-import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
 import com.arkvis.irc.ui.SimpleResultHandler;
@@ -23,7 +23,7 @@ public class ChannelsViewModel {
         listeners = new ArrayList<>();
 
         IRC.getClient().addConnectionListener(createConnectionResultHandler());
-        IRC.getClient().addUserJoinChannelListener(createJoinChannelResultHandler());
+        IRC.getClient().addUserJoinChannelListener(createUserJoinChannelResultHandler());
     }
 
     public void addServersChangeListener(Consumer<List<Server>> listener) {
@@ -39,8 +39,8 @@ public class ChannelsViewModel {
         });
     }
 
-    private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
-        return new SimpleResultHandler<>(this::onJoinChannelSuccess, () -> {
+    private ResultHandler<UserJoinEvent> createUserJoinChannelResultHandler() {
+        return new SimpleResultHandler<>(this::onUserJoinChannelSuccess, () -> {
         });
     }
 
@@ -51,9 +51,9 @@ public class ChannelsViewModel {
         updateListeners();
     }
 
-    private void onJoinChannelSuccess(ChannelEvent channelEvent) {
+    private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {
         if (Objects.nonNull(currentServer)) {
-            currentServer.addChannel(channelEvent.getName());
+            currentServer.addChannel(joinEvent.getChannelName());
             updateListeners();
         }
     }

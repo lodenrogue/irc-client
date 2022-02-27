@@ -1,7 +1,7 @@
 package com.arkvis.irc.ui.users;
 
-import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
 import com.arkvis.irc.ui.SimpleResultHandler;
@@ -20,7 +20,7 @@ public class UsersViewModel {
         channelUsersMap = new HashMap<>();
         users = FXCollections.observableArrayList();
 
-        IRC.getClient().addUserJoinChannelListener(createJoinChannelResultHandler());
+        IRC.getClient().addUserJoinChannelListener(createUserJoinChannelResultHandler());
         EventEmitter.getInstance().registerSelectChannelListener(createSelectChannelListener());
     }
 
@@ -36,16 +36,16 @@ public class UsersViewModel {
         Platform.runLater(() -> users.setAll(newUsers));
     }
 
-    private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
-        return new SimpleResultHandler<>(this::onJoinChannelSuccess, () -> {
+    private ResultHandler<UserJoinEvent> createUserJoinChannelResultHandler() {
+        return new SimpleResultHandler<>(this::onUserJoinChannelSuccess, () -> {
         });
     }
 
-    private void onJoinChannelSuccess(ChannelEvent channel) {
-        List<String> channelUsers = new ArrayList<>(channel.getUsers());
+    private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {
+        List<String> channelUsers = new ArrayList<>(joinEvent.getUsers());
         channelUsers.sort(String::compareToIgnoreCase);
 
-        channelUsersMap.put(channel.getName(), channelUsers);
+        channelUsersMap.put(joinEvent.getChannelName(), channelUsers);
         updateUsers(channelUsers);
     }
 }

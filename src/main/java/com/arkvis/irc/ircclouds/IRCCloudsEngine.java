@@ -43,8 +43,8 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
-    public void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler) {
-        ircApi.joinChannel(channelName, createJoinChannelCallback(resultHandler));
+    public void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler) {
+        ircApi.joinChannel(channelName, createUserJoinChannelCallback(resultHandler));
     }
 
     @Override
@@ -79,9 +79,9 @@ public class IRCCloudsEngine implements Engine {
                 resultHandler::onError);
     }
 
-    private Callback<IRCChannel> createJoinChannelCallback(ResultHandler<ChannelEvent> resultHandler) {
+    private Callback<IRCChannel> createUserJoinChannelCallback(ResultHandler<UserJoinEvent> resultHandler) {
         return createCallback(
-                ircChannel -> resultHandler.onSuccess(toChannel(ircChannel)),
+                ircChannel -> resultHandler.onSuccess(toUserJoinEvent(ircChannel)),
                 resultHandler::onError);
     }
 
@@ -105,12 +105,12 @@ public class IRCCloudsEngine implements Engine {
         };
     }
 
-    private ChannelEvent toChannel(IRCChannel ircChannel) {
+    private UserJoinEvent toUserJoinEvent(IRCChannel ircChannel) {
         List<String> users = ircChannel.getUsers().stream()
                 .map(IRCUser::getNick)
                 .collect(Collectors.toList());
 
-        return new ChannelEvent(ircChannel.getName(), users, null);
+        return new UserJoinEvent(ircChannel.getName(), users);
     }
 
     private MessageEvent toMessageEvent(ChannelPrivMsg message) {

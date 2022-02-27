@@ -37,7 +37,7 @@ public class ChatViewModel {
 
     public void init() {
         client.addConnectionListener(createConnectionResultHandler());
-        client.addUserJoinChannelListener(createJoinChannelResultHandler());
+        client.addUserJoinChannelListener(createUserJoinChannelResultHandler());
         client.addChannelMessageListener(createChannelMessageListener());
         client.addSendMessageListener(createSendMessageResultHandler());
 
@@ -85,9 +85,9 @@ public class ChatViewModel {
                 () -> updateChatText(currentChatView, SERVER_SENDER, "Error sending message"));
     }
 
-    private ResultHandler<ChannelEvent> createJoinChannelResultHandler() {
+    private ResultHandler<UserJoinEvent> createUserJoinChannelResultHandler() {
         return new SimpleResultHandler<>(
-                this::onJoinChannelSuccess,
+                this::onUserJoinChannelSuccess,
                 () -> updateChatText(currentChatView, SERVER_SENDER, "Error joining channel"));
     }
 
@@ -108,8 +108,8 @@ public class ChatViewModel {
         updateChatText(channelEvent.getName(), nickName.getValue(), channelEvent.getMessage());
     }
 
-    private void onJoinChannelSuccess(ChannelEvent channelEvent) {
-        String channelName = channelEvent.getName();
+    private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {
+        String channelName = joinEvent.getChannelName();
         chatViews.putIfAbsent(channelName, "");
         currentChatView = channelName;
 
