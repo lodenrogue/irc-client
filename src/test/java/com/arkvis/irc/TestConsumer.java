@@ -2,7 +2,7 @@ package com.arkvis.irc;
 
 import java.util.function.Consumer;
 
-public class TestConsumer<T> implements Consumer<T> {
+class TestConsumer<T> implements Consumer<T> {
     private T t;
 
     @Override

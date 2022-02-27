@@ -40,7 +40,7 @@ public class ChatViewModel {
 
     public void init() {
         client.addConnectionListener(createConnectionResultHandler());
-        client.addJoinChannelListener(createJoinChannelResultHandler());
+        client.addUserJoinChannelListener(createJoinChannelResultHandler());
         client.addChannelMessageListener(createChannelMessageListener());
         client.addSendMessageListener(createSendMessageResultHandler());
 

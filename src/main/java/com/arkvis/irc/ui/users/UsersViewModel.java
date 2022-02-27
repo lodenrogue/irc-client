@@ -20,7 +20,7 @@ public class UsersViewModel {
         channelUsersMap = new HashMap<>();
         users = FXCollections.observableArrayList();
 
-        IRC.getClient().addJoinChannelListener(createJoinChannelResultHandler());
+        IRC.getClient().addUserJoinChannelListener(createJoinChannelResultHandler());
         EventEmitter.getInstance().registerSelectChannelListener(createSelectChannelListener());
     }
 

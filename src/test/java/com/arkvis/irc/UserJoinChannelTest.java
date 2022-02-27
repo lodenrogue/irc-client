@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JoinChannelTest {
+class UserJoinChannelTest {
 
     private String channelName;
 
@@ -26,7 +26,7 @@ class JoinChannelTest {
 
         IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
         TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
-        ircClient.addJoinChannelListener(resultHandler);
+        ircClient.addUserJoinChannelListener(resultHandler);
 
         ircClient.joinChannel(channelName);
         assertEquals(channelName, resultHandler.getAccepted().getName());
@@ -44,7 +44,7 @@ class JoinChannelTest {
 
         IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
         TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
-        ircClient.addJoinChannelListener(resultHandler);
+        ircClient.addUserJoinChannelListener(resultHandler);
 
         ircClient.joinChannel(channelName);
         assertEquals(users, resultHandler.getAccepted().getUsers());
@@ -54,7 +54,7 @@ class JoinChannelTest {
     void should_adviseOfError_when_joiningChannelFailed() {
         IRCClient ircClient = new IRCClient(new TestFailedJoinChannelEngine());
         TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
-        ircClient.addJoinChannelListener(resultHandler);
+        ircClient.addUserJoinChannelListener(resultHandler);
 
         ircClient.joinChannel("test123");
         assertFalse(resultHandler.wasOnSuccessCalled());

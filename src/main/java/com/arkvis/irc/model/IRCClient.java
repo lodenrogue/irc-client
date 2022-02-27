@@ -7,18 +7,21 @@ import java.util.function.Consumer;
 public class IRCClient {
     private final Engine engine;
     private final List<ResultHandler<ConnectionEvent>> connectionListeners;
-    private final List<ResultHandler<ChannelEvent>> joinChannelListeners;
+    private final List<ResultHandler<ChannelEvent>> userJoinChannelListeners;
+    private final List<Consumer<OtherJoinEvent>> otherJoinChannelListeners;
     private final List<Consumer<ChannelEvent>> channelMessageListeners;
     private final List<ResultHandler<ChannelEvent>> sendMessageListeners;
 
     public IRCClient(Engine engine) {
         this.engine = engine;
         connectionListeners = new ArrayList<>();
-        joinChannelListeners = new ArrayList<>();
+        userJoinChannelListeners = new ArrayList<>();
+        otherJoinChannelListeners = new ArrayList<>();
         channelMessageListeners = new ArrayList<>();
         sendMessageListeners = new ArrayList<>();
 
-        createChannelMessageListener();
+        engine.addChannelMessageListener(this::notifyChannelMessageListeners);
+        engine.addOtherJoinChannelListener(this::notifyOtherJoinChannelListeners);
     }
 
     public void connect(String serverName, List<String> nicks) {
@@ -26,7 +29,7 @@ public class IRCClient {
     }
 
     public void joinChannel(String channelName) {
-        engine.joinChannel(channelName, createResultHandler(joinChannelListeners));
+        engine.joinChannel(channelName, createResultHandler(userJoinChannelListeners));
     }
 
     public void sendMessage(String channelName, String message) {
@@ -37,8 +40,12 @@ public class IRCClient {
         connectionListeners.add(listener);
     }
 
-    public void addJoinChannelListener(ResultHandler<ChannelEvent> listener) {
-        joinChannelListeners.add(listener);
+    public void addUserJoinChannelListener(ResultHandler<ChannelEvent> listener) {
+        userJoinChannelListeners.add(listener);
+    }
+
+    public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
+        otherJoinChannelListeners.add(listener);
     }
 
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
@@ -63,11 +70,11 @@ public class IRCClient {
         };
     }
 
-    private void createChannelMessageListener() {
-        engine.addChannelMessageListener(this::notifyChannelMessageListeners);
+    private void notifyChannelMessageListeners(ChannelEvent event) {
+        channelMessageListeners.forEach(listener -> listener.accept(event));
     }
 
-    private void notifyChannelMessageListeners(ChannelEvent channelEvent) {
-        channelMessageListeners.forEach(listener -> listener.accept(channelEvent));
+    private void notifyOtherJoinChannelListeners(OtherJoinEvent event) {
+        otherJoinChannelListeners.forEach(listener -> listener.accept(event));
     }
 }

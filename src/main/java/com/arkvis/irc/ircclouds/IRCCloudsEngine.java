@@ -1,14 +1,12 @@
 package com.arkvis.irc.ircclouds;
 
-import com.arkvis.irc.model.ChannelEvent;
-import com.arkvis.irc.model.ConnectionEvent;
-import com.arkvis.irc.model.Engine;
-import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.*;
 import com.ircclouds.irc.api.Callback;
 import com.ircclouds.irc.api.IRCApi;
 import com.ircclouds.irc.api.IRCApiImpl;
 import com.ircclouds.irc.api.domain.IRCChannel;
 import com.ircclouds.irc.api.domain.IRCUser;
+import com.ircclouds.irc.api.domain.messages.ChanJoinMessage;
 import com.ircclouds.irc.api.domain.messages.ChannelPrivMsg;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
@@ -64,6 +62,17 @@ public class IRCCloudsEngine implements Engine {
         });
     }
 
+    @Override
+    public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onChannelJoin(ChanJoinMessage message) {
+                listener.accept(toOtherJoinEvent(message));
+            }
+        });
+
+    }
+
     private Callback<String> createSendMessageCallback(String channelName, String message, ResultHandler<ChannelEvent> resultHandler) {
         return createCallback(
                 response -> resultHandler.onSuccess(new ChannelEvent(channelName, null, message)),
@@ -112,5 +121,9 @@ public class IRCCloudsEngine implements Engine {
 
     private ConnectionEvent toConnection(IIRCState state) {
         return new ConnectionEvent(state.getNickname(), state.getServer().getHostname());
+    }
+
+    private OtherJoinEvent toOtherJoinEvent(ChanJoinMessage message) {
+        return new OtherJoinEvent(message.getChannelName(), message.getSource().getNick());
     }
 }

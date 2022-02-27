@@ -23,7 +23,7 @@ public class ChannelsViewModel {
         listeners = new ArrayList<>();
 
         IRC.getClient().addConnectionListener(createConnectionResultHandler());
-        IRC.getClient().addJoinChannelListener(createJoinChannelResultHandler());
+        IRC.getClient().addUserJoinChannelListener(createJoinChannelResultHandler());
     }
 
     public void addServersChangeListener(Consumer<List<Server>> listener) {

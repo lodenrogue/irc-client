@@ -1,9 +1,6 @@
 package com.arkvis.irc.testengines;
 
-import com.arkvis.irc.model.ChannelEvent;
-import com.arkvis.irc.model.ConnectionEvent;
-import com.arkvis.irc.model.Engine;
-import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.*;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,6 +19,11 @@ public abstract class AbstractTestEngine implements Engine {
 
     @Override
     public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
+
+    }
+
+    @Override
+    public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
 
     }
 
