@@ -9,10 +9,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class UsersViewModel {
@@ -45,7 +42,10 @@ public class UsersViewModel {
     }
 
     private void onJoinChannelSuccess(ChannelEvent channel) {
-        channelUsersMap.put(channel.getName(), channel.getUsers());
-        updateUsers(channel.getUsers());
+        List<String> channelUsers = new ArrayList<>(channel.getUsers());
+        channelUsers.sort(String::compareToIgnoreCase);
+
+        channelUsersMap.put(channel.getName(), channelUsers);
+        updateUsers(channelUsers);
     }
 }
