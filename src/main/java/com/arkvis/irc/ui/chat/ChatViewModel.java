@@ -38,6 +38,7 @@ public class ChatViewModel {
     public void init() {
         client.addConnectionListener(createConnectionResultHandler());
         client.addUserJoinChannelListener(createUserJoinChannelResultHandler());
+        client.addOtherJoinChannelListener(createOtherJoinChannelListener());
         client.addChannelMessageListener(createChannelMessageListener());
         client.addSendMessageListener(createSendMessageResultHandler());
 
@@ -91,6 +92,13 @@ public class ChatViewModel {
                 () -> updateChatText(currentChatView, SERVER_SENDER, "Error joining channel"));
     }
 
+    private Consumer<OtherJoinEvent> createOtherJoinChannelListener() {
+        return joinEvent -> updateChatText(
+                joinEvent.getChannelName(),
+                SERVER_SENDER,
+                String.format("%s has joined", joinEvent.getNickName()));
+    }
+
     private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
         return new SimpleResultHandler<>(
                 this::onConnectionSuccess,
@@ -138,12 +146,20 @@ public class ChatViewModel {
     }
 
     private void updateChatText(String viewName, String sender, String message) {
-        String currentText = chatViews.get(viewName);
-        String newText = String.format("%s%s : %s\n", currentText, sender, message);
+        String newText = String.format("%s%s : %s\n",
+                getCurrentText(viewName),
+                sender,
+                message);
+
         chatViews.put(viewName, newText);
 
         if (viewName.equals(currentChatView)) {
             chatTextListeners.forEach(listener -> listener.accept(newText));
         }
+    }
+
+    private String getCurrentText(String viewName) {
+        String text = chatViews.get(viewName);
+        return Objects.isNull(text) ? "" : text;
     }
 }
