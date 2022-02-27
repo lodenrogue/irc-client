@@ -11,9 +11,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ChatViewModel {
@@ -22,7 +20,7 @@ public class ChatViewModel {
     private final Map<String, String> chatViews;
     private String currentChatView;
 
-    private final StringProperty chatText;
+    private final List<Consumer<String>> chatTextListeners;
     private final StringProperty nickName;
     private final StringProperty userInput;
 
@@ -31,8 +29,8 @@ public class ChatViewModel {
 
     public ChatViewModel() {
         chatViews = new HashMap<>();
+        chatTextListeners = new ArrayList<>();
 
-        chatText = new SimpleStringProperty("");
         nickName = new SimpleStringProperty("");
         userInput = new SimpleStringProperty("");
 
@@ -63,16 +61,16 @@ public class ChatViewModel {
         }
     }
 
-    public StringProperty getChatTextProperty() {
-        return chatText;
-    }
-
     public StringProperty getUserInputProperty() {
         return userInput;
     }
 
     public StringProperty getNickNameProperty() {
         return nickName;
+    }
+
+    public void addUserInputChangeListener(Consumer<String> listener) {
+        chatTextListeners.add(listener);
     }
 
     private void connectToServer() {
@@ -135,7 +133,7 @@ public class ChatViewModel {
     private void changeToView(String viewName) {
         currentChatView = viewName;
         String text = chatViews.get(currentChatView);
-        Platform.runLater(() -> chatText.setValue(text));
+        chatTextListeners.forEach(listener -> listener.accept(text));
     }
 
     private void updateNickName(String newName) {
@@ -148,7 +146,7 @@ public class ChatViewModel {
         chatViews.put(viewName, newText);
 
         if (viewName.equals(currentChatView)) {
-            Platform.runLater(() -> chatText.setValue(newText));
+            chatTextListeners.forEach(listener -> listener.accept(newText));
         }
     }
 }
