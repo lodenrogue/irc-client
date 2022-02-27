@@ -2,6 +2,7 @@ package com.arkvis.irc;
 
 import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.IRCClient;
+import com.arkvis.irc.model.MessageEvent;
 import com.arkvis.irc.testengines.channelmessage.TestChannelMessageEngine;
 import com.arkvis.irc.testengines.channelmessage.TestSuccessfulSendMessageEngine;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +28,11 @@ class ChannelMessageTest {
         TestChannelMessageEngine engine = new TestChannelMessageEngine();
         IRCClient client = new IRCClient(engine);
 
-        TestConsumer<ChannelEvent> messageConsumer = new TestConsumer<>();
+        TestConsumer<MessageEvent> messageConsumer = new TestConsumer<>();
         client.addChannelMessageListener(messageConsumer);
 
-        ChannelEvent channelEvent = new ChannelEvent(channelName, sender, message);
-        engine.sendChannelMessage(channelEvent);
+        MessageEvent messageEvent = new MessageEvent(channelName, sender, message);
+        engine.sendChannelMessage(messageEvent);
         assertEquals(message, messageConsumer.getAccepted().getMessage());
     }
 
@@ -40,12 +41,12 @@ class ChannelMessageTest {
         TestChannelMessageEngine engine = new TestChannelMessageEngine();
         IRCClient client = new IRCClient(engine);
 
-        TestConsumer<ChannelEvent> messageConsumer = new TestConsumer<>();
+        TestConsumer<MessageEvent> messageConsumer = new TestConsumer<>();
         client.addChannelMessageListener(messageConsumer);
 
-        ChannelEvent channelEvent = new ChannelEvent(channelName, sender, message);
-        engine.sendChannelMessage(channelEvent);
-        assertEquals(sender, messageConsumer.getAccepted().getSender());
+        MessageEvent messageEvent = new MessageEvent(channelName, sender, message);
+        engine.sendChannelMessage(messageEvent);
+        assertEquals(sender, messageConsumer.getAccepted().getSenderNick());
     }
 
     @Test

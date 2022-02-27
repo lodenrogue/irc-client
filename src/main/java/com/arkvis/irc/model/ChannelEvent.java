@@ -7,20 +7,11 @@ import java.util.List;
 public class ChannelEvent {
     private final String name;
     private final String message;
-    private final String sender;
     private final List<String> users;
 
-    public ChannelEvent(String name, String sender, String message) {
-        this.name = name;
-        this.users = new ArrayList<>();
-        this.sender = sender;
-        this.message = message;
-    }
-
-    public ChannelEvent(String name, List<String> users, String sender, String message) {
+    public ChannelEvent(String name, List<String> users, String message) {
         this.name = name;
         this.users = users;
-        this.sender = sender;
         this.message = message;
     }
 
@@ -30,10 +21,6 @@ public class ChannelEvent {
 
     public String getMessage() {
         return message;
-    }
-
-    public String getSender() {
-        return sender;
     }
 
     public List<String> getUsers() {

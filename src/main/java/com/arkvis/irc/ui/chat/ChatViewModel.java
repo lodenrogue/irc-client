@@ -1,9 +1,6 @@
 package com.arkvis.irc.ui.chat;
 
-import com.arkvis.irc.model.ChannelEvent;
-import com.arkvis.irc.model.ConnectionEvent;
-import com.arkvis.irc.model.IRCClient;
-import com.arkvis.irc.model.ResultHandler;
+import com.arkvis.irc.model.*;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
 import com.arkvis.irc.ui.SimpleResultHandler;
@@ -100,11 +97,11 @@ public class ChatViewModel {
                 () -> updateChatText(currentChatView, SERVER_SENDER, "Error connecting to server"));
     }
 
-    private Consumer<ChannelEvent> createChannelMessageListener() {
-        return channelEvent -> updateChatText(
-                channelEvent.getName(),
-                channelEvent.getSender(),
-                channelEvent.getMessage());
+    private Consumer<MessageEvent> createChannelMessageListener() {
+        return messageEvent -> updateChatText(
+                messageEvent.getChannelName(),
+                messageEvent.getSenderNick(),
+                messageEvent.getMessage());
     }
 
     private void onSendMessageSuccess(ChannelEvent channelEvent) {

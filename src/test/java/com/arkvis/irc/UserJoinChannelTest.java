@@ -36,11 +36,7 @@ class UserJoinChannelTest {
     void should_returnUsersList_when_successfullyJoiningChannel() {
         List<String> users = List.of("Tom", "Sally", "Tami");
 
-        ChannelEvent channelEvent = new ChannelEvent(
-                channelName,
-                users,
-                null,
-                null);
+        ChannelEvent channelEvent = new ChannelEvent(channelName, users, null);
 
         IRCClient ircClient = new IRCClient(new TestSuccessfulJoinChannelEngine(channelEvent));
         TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();

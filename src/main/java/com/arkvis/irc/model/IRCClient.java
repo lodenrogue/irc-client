@@ -9,7 +9,7 @@ public class IRCClient {
     private final List<ResultHandler<ConnectionEvent>> connectionListeners;
     private final List<ResultHandler<ChannelEvent>> userJoinChannelListeners;
     private final List<Consumer<OtherJoinEvent>> otherJoinChannelListeners;
-    private final List<Consumer<ChannelEvent>> channelMessageListeners;
+    private final List<Consumer<MessageEvent>> channelMessageListeners;
     private final List<ResultHandler<ChannelEvent>> sendMessageListeners;
 
     public IRCClient(Engine engine) {
@@ -48,7 +48,7 @@ public class IRCClient {
         otherJoinChannelListeners.add(listener);
     }
 
-    public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
+    public void addChannelMessageListener(Consumer<MessageEvent> listener) {
         channelMessageListeners.add(listener);
     }
 
@@ -70,7 +70,7 @@ public class IRCClient {
         };
     }
 
-    private void notifyChannelMessageListeners(ChannelEvent event) {
+    private void notifyChannelMessageListeners(MessageEvent event) {
         channelMessageListeners.forEach(listener -> listener.accept(event));
     }
 

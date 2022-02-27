@@ -9,7 +9,7 @@ public interface Engine {
 
     void joinChannel(String channelName, ResultHandler<ChannelEvent> resultHandler);
 
-    void addChannelMessageListener(Consumer<ChannelEvent> listener);
+    void addChannelMessageListener(Consumer<MessageEvent> listener);
 
     void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener);
 

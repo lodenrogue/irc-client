@@ -53,11 +53,11 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
-    public void addChannelMessageListener(Consumer<ChannelEvent> listener) {
+    public void addChannelMessageListener(Consumer<MessageEvent> listener) {
         ircApi.addListener(new VariousMessageListenerAdapter() {
             @Override
             public void onChannelMessage(ChannelPrivMsg message) {
-                listener.accept(toChannel(message));
+                listener.accept(toMessageEvent(message));
             }
         });
     }
@@ -110,13 +110,13 @@ public class IRCCloudsEngine implements Engine {
                 .map(IRCUser::getNick)
                 .collect(Collectors.toList());
 
-        return new ChannelEvent(ircChannel.getName(), users, null, null);
+        return new ChannelEvent(ircChannel.getName(), users, null);
     }
 
-    private ChannelEvent toChannel(ChannelPrivMsg message) {
+    private MessageEvent toMessageEvent(ChannelPrivMsg message) {
         IRCUser sender = message.getSource();
         String senderNick = sender.getNick();
-        return new ChannelEvent(message.getChannelName(), senderNick, message.getText());
+        return new MessageEvent(message.getChannelName(), senderNick, message.getText());
     }
 
     private ConnectionEvent toConnection(IIRCState state) {
