@@ -1,4 +1,4 @@
-package com.arkvis.irc.testengines;
+package com.arkvis.irc;
 
 import com.arkvis.irc.model.*;
 

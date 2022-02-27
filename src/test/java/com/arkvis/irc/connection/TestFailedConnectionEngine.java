@@ -1,8 +1,8 @@
-package com.arkvis.irc.testengines.connection;
+package com.arkvis.irc.connection;
 
 import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.ResultHandler;
-import com.arkvis.irc.testengines.AbstractTestEngine;
+import com.arkvis.irc.AbstractTestEngine;
 
 import java.util.List;
 

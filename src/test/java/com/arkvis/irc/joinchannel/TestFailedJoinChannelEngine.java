@@ -1,8 +1,8 @@
-package com.arkvis.irc.testengines.joinchannel;
+package com.arkvis.irc.joinchannel;
 
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.model.UserJoinEvent;
-import com.arkvis.irc.testengines.AbstractTestEngine;
+import com.arkvis.irc.AbstractTestEngine;
 
 public class TestFailedJoinChannelEngine extends AbstractTestEngine {
 

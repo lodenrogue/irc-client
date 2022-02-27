@@ -1,7 +1,7 @@
-package com.arkvis.irc.testengines.joinchannel;
+package com.arkvis.irc.joinchannel;
 
 import com.arkvis.irc.model.OtherJoinEvent;
-import com.arkvis.irc.testengines.AbstractTestEngine;
+import com.arkvis.irc.AbstractTestEngine;
 
 import java.util.function.Consumer;
 

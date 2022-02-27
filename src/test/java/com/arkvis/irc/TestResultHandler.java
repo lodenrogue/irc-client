@@ -4,7 +4,7 @@ import com.arkvis.irc.model.ResultHandler;
 
 import java.util.Objects;
 
-class TestResultHandler<T> implements ResultHandler<T> {
+public class TestResultHandler<T> implements ResultHandler<T> {
     private T accepted;
     private boolean onErrorCalled;
 

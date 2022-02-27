@@ -1,8 +1,8 @@
-package com.arkvis.irc.testengines.channelmessage;
+package com.arkvis.irc.channelmessage;
 
 import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.ResultHandler;
-import com.arkvis.irc.testengines.AbstractTestEngine;
+import com.arkvis.irc.AbstractTestEngine;
 
 public class TestSuccessfulSendMessageEngine extends AbstractTestEngine {
 

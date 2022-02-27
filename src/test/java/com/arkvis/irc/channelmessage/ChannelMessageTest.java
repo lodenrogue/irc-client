@@ -1,10 +1,10 @@
-package com.arkvis.irc;
+package com.arkvis.irc.channelmessage;
 
+import com.arkvis.irc.TestConsumer;
+import com.arkvis.irc.TestResultHandler;
 import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.MessageEvent;
-import com.arkvis.irc.testengines.channelmessage.TestChannelMessageEngine;
-import com.arkvis.irc.testengines.channelmessage.TestSuccessfulSendMessageEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
