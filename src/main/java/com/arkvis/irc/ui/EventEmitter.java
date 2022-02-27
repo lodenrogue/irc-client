@@ -8,10 +8,10 @@ import java.util.function.Consumer;
 public class EventEmitter {
     private static EventEmitter instance;
 
-    private final List<Consumer<String>> selectViewListeners;
+    private final List<Consumer<String>> selectChannelListeners;
 
     private EventEmitter() {
-        selectViewListeners = new ArrayList<>();
+        selectChannelListeners = new ArrayList<>();
     }
 
     public static EventEmitter getInstance() {
@@ -21,11 +21,11 @@ public class EventEmitter {
         return instance;
     }
 
-    public void registerSelectViewListener(Consumer<String> listener) {
-        selectViewListeners.add(listener);
+    public void registerSelectChannelListener(Consumer<String> listener) {
+        selectChannelListeners.add(listener);
     }
 
-    public void emitSelectViewEvent(String viewName) {
-        selectViewListeners.forEach(listener -> listener.accept(viewName));
+    public void emitSelectChannelEvent(String channelName) {
+        selectChannelListeners.forEach(listener -> listener.accept(channelName));
     }
 }

@@ -30,7 +30,7 @@ public class ChannelsView implements Initializable {
     }
 
     private ChangeListener<String> createSelectItemListener() {
-        return (observable, oldValue, newValue) -> viewModel.selectView(newValue);
+        return (observable, oldValue, newValue) -> viewModel.selectChannel(newValue);
     }
 
     private void updateServers(List<Server> servers) {

@@ -45,7 +45,7 @@ public class ChatViewModel {
         client.addSendMessageListener(createSendMessageResultHandler());
 
 
-        eventEmitter.registerSelectViewListener(this::changeToView);
+        eventEmitter.registerSelectChannelListener(this::changeToView);
         connectToServer();
     }
 

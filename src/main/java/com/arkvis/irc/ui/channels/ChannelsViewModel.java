@@ -30,8 +30,8 @@ public class ChannelsViewModel {
         listeners.add(listener);
     }
 
-    public void selectView(String viewName) {
-        EventEmitter.getInstance().emitSelectViewEvent(viewName);
+    public void selectChannel(String channelName) {
+        EventEmitter.getInstance().emitSelectChannelEvent(channelName);
     }
 
     private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
