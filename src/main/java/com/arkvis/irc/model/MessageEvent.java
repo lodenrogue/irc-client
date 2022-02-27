@@ -12,6 +12,12 @@ public class MessageEvent {
         this.message = message;
     }
 
+    public MessageEvent(String channelName, String message) {
+        this.channelName = channelName;
+        this.message = message;
+        this.senderNick = null;
+    }
+
     public String getChannelName() {
         return channelName;
     }

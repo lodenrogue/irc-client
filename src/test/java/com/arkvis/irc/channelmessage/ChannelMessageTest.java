@@ -2,7 +2,6 @@ package com.arkvis.irc.channelmessage;
 
 import com.arkvis.irc.TestConsumer;
 import com.arkvis.irc.TestResultHandler;
-import com.arkvis.irc.model.ChannelEvent;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.MessageEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +53,7 @@ class ChannelMessageTest {
         TestSuccessfulSendMessageEngine engine = new TestSuccessfulSendMessageEngine();
         IRCClient client = new IRCClient(engine);
 
-        TestResultHandler<ChannelEvent> resultHandler = new TestResultHandler<>();
+        TestResultHandler<MessageEvent> resultHandler = new TestResultHandler<>();
         client.addSendMessageListener(resultHandler);
 
         client.sendMessage(channelName, message);

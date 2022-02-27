@@ -80,7 +80,7 @@ public class ChatViewModel {
         client.connect(serverName, Arrays.asList("nick", "altNick1", "altNick2"));
     }
 
-    private ResultHandler<ChannelEvent> createSendMessageResultHandler() {
+    private ResultHandler<MessageEvent> createSendMessageResultHandler() {
         return new SimpleResultHandler<>(
                 this::onSendMessageSuccess,
                 () -> updateChatText(currentChatView, SERVER_SENDER, "Error sending message"));
@@ -112,8 +112,8 @@ public class ChatViewModel {
                 messageEvent.getMessage());
     }
 
-    private void onSendMessageSuccess(ChannelEvent channelEvent) {
-        updateChatText(channelEvent.getName(), nickName.getValue(), channelEvent.getMessage());
+    private void onSendMessageSuccess(MessageEvent event) {
+        updateChatText(event.getChannelName(), nickName.getValue(), event.getMessage());
     }
 
     private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {

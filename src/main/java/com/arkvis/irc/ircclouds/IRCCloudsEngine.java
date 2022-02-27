@@ -48,7 +48,7 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
-    public void sendMessage(String channelName, String message, ResultHandler<ChannelEvent> resultHandler) {
+    public void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
         ircApi.message(channelName, message, createSendMessageCallback(channelName, message, resultHandler));
     }
 
@@ -73,9 +73,9 @@ public class IRCCloudsEngine implements Engine {
 
     }
 
-    private Callback<String> createSendMessageCallback(String channelName, String message, ResultHandler<ChannelEvent> resultHandler) {
+    private Callback<String> createSendMessageCallback(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
         return createCallback(
-                response -> resultHandler.onSuccess(new ChannelEvent(channelName, null, message)),
+                response -> resultHandler.onSuccess(new MessageEvent(channelName, message)),
                 resultHandler::onError);
     }
 

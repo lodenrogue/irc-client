@@ -3,8 +3,6 @@ package com.arkvis.irc.joinchannel;
 import com.arkvis.irc.TestResultHandler;
 import com.arkvis.irc.model.IRCClient;
 import com.arkvis.irc.model.UserJoinEvent;
-import com.arkvis.irc.joinchannel.TestFailedJoinChannelEngine;
-import com.arkvis.irc.joinchannel.TestSuccessfulJoinChannelEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
