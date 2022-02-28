@@ -1,8 +1,7 @@
 package com.arkvis.irc.joinchannel;
 
 import com.arkvis.irc.TestResultHandler;
-import com.arkvis.irc.model.IRCClient;
-import com.arkvis.irc.model.UserJoinEvent;
+import com.arkvis.irc.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +19,20 @@ class UserJoinChannelTest {
         channelName = "TEST_CHANNEL";
         users = List.of("Tom", "Sally", "Tami");
     }
+
+    @Test
+    void _should_returnCorrectChannelName_when_successfullyJoiningChannel() {
+        Server server = connectToServer(new TestSuccessfulJoinChannelEngine());
+        TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
+        server.addUserJoinChannelListener(resultHandler);
+
+        server.joinChannel(channelName);
+        assertEquals(channelName, resultHandler.getAccepted().getName());
+    }
+
+    // TODO test for channel size
+
+    //TODO test for users size
 
     @Test
     void should_returnCorrectChannelName_when_successfullyJoiningChannel() {
@@ -54,5 +67,14 @@ class UserJoinChannelTest {
         ircClient.joinChannel(channelName);
         assertFalse(resultHandler.wasOnSuccessCalled());
         assertTrue(resultHandler.wasOnErrorCalled());
+    }
+
+    private Server connectToServer(Engine engine) {
+        TestResultHandler<Server> resultHandler = new TestResultHandler<>();
+        Server.connect(
+                engine,
+                new Connection("TEST_SERVER", List.of("nick1", "nick2")),
+                resultHandler);
+        return resultHandler.getAccepted();
     }
 }

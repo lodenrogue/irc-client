@@ -11,6 +11,8 @@ public interface Engine {
 
     void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler);
 
+    void _joinChannel(String channelName, ResultHandler<Channel> resultHandler);
+
     void addChannelMessageListener(Consumer<MessageEvent> listener);
 
     void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener);

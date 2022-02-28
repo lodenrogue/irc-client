@@ -25,6 +25,6 @@ public class TestSuccessfulConnectionEngine extends AbstractTestEngine {
     @Override
     public void connect(Connection connection, ResultHandler<Server> resultHandler) {
         User user = new User(connection.getNicks().get(0));
-        resultHandler.onSuccess(new Server(connection.getServerName(), user));
+        resultHandler.onSuccess(new Server(this, connection.getServerName(), user));
     }
 }

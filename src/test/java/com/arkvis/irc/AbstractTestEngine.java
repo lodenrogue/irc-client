@@ -23,6 +23,11 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
+    public void _joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
+
+    }
+
+    @Override
     public void addChannelMessageListener(Consumer<MessageEvent> listener) {
 
     }

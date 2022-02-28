@@ -66,6 +66,11 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
+    public void _joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
+        ircApi.joinChannel(channelName, _createUserJoinChannelCallback(resultHandler));
+    }
+
+    @Override
     public void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
         ircApi.message(channelName, message, createSendMessageCallback(channelName, message, resultHandler));
     }
@@ -123,6 +128,12 @@ public class IRCCloudsEngine implements Engine {
                 resultHandler::onError);
     }
 
+    private Callback<IRCChannel> _createUserJoinChannelCallback(ResultHandler<Channel> resultHandler) {
+        return createCallback(
+                ircChannel -> resultHandler.onSuccess(toChannel(ircChannel)),
+                resultHandler::onError);
+    }
+
     private Callback<IIRCState> createConnectCallback(ResultHandler<ConnectionEvent> resultHandler) {
         return createCallback(
                 state -> resultHandler.onSuccess(toConnection(state)),
@@ -157,6 +168,14 @@ public class IRCCloudsEngine implements Engine {
         return new UserJoinEvent(ircChannel.getName(), users);
     }
 
+    private Channel toChannel(IRCChannel ircChannel) {
+        List<User> users = ircChannel.getUsers().stream()
+                .map(ircUser -> new User(ircUser.getNick()))
+                .collect(Collectors.toList());
+
+        return new Channel(ircChannel.getName(), users);
+    }
+
     private MessageEvent toMessageEvent(ChannelPrivMsg message) {
         IRCUser sender = message.getSource();
         String senderNick = sender.getNick();
@@ -169,7 +188,7 @@ public class IRCCloudsEngine implements Engine {
 
     private Server toServer(IIRCState state) {
         User user = new User(state.getNickname());
-        return new Server(state.getServer().getHostname(), user);
+        return new Server(this, state.getServer().getHostname(), user);
     }
 
     private OtherJoinEvent toOtherJoinEvent(ChanJoinMessage message) {
