@@ -74,9 +74,10 @@ public class ChatViewModel {
     private void connectToServer() {
         String serverName = "irc.libera.chat";
         chatViews.put(serverName, "");
-        currentChatView = serverName;
 
-        updateChatText(currentChatView, SERVER_SENDER, "Connecting to server...");
+        changeToView(serverName);
+        updateChatText(serverName, SERVER_SENDER, "Connecting to server...");
+
         client.connect(serverName, Arrays.asList("nick", "altNick1", "altNick2"));
     }
 
@@ -93,10 +94,12 @@ public class ChatViewModel {
     }
 
     private Consumer<OtherJoinEvent> createOtherJoinChannelListener() {
-        return joinEvent -> updateChatText(
-                joinEvent.getChannelName(),
-                SERVER_SENDER,
-                String.format("%s has joined", joinEvent.getNickName()));
+        return joinEvent -> {
+            updateChatText(
+                    joinEvent.getChannelName(),
+                    SERVER_SENDER,
+                    String.format("%s has joined", joinEvent.getNickName()));
+        };
     }
 
     private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
@@ -119,19 +122,19 @@ public class ChatViewModel {
     private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {
         String channelName = joinEvent.getChannelName();
         chatViews.putIfAbsent(channelName, "");
+        changeToView(channelName);
 
         String message = String.format("Successfully joined channel %s", channelName);
         updateChatText(channelName, SERVER_SENDER, message);
-        changeToView(channelName);
     }
 
     private void onConnectionSuccess(ConnectionEvent connectionEvent) {
         String serverName = connectionEvent.getServerName();
         chatViews.putIfAbsent(serverName, "");
-        currentChatView = serverName;
+        changeToView(serverName);
 
         String message = String.format("Successfully connected to %s", serverName);
-        updateChatText(currentChatView, SERVER_SENDER, message);
+        updateChatText(serverName, SERVER_SENDER, message);
         updateNickName(connectionEvent.getNickName());
     }
 
@@ -152,6 +155,10 @@ public class ChatViewModel {
                 message);
 
         chatViews.put(viewName, newText);
+
+        if (viewName.equals(currentChatView)) {
+            chatTextListeners.forEach(listener -> listener.accept(newText));
+        }
     }
 
     private String getCurrentText(String viewName) {
