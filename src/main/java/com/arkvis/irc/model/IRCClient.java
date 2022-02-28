@@ -47,7 +47,7 @@ public class IRCClient {
         userJoinChannelListeners.add(listener);
     }
 
-    public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
+    public void addOtherUserJoinChannelListener(Consumer<OtherJoinEvent> listener) {
         otherJoinChannelListeners.add(listener);
     }
 

@@ -25,7 +25,7 @@ class OtherJoinChannelTest {
         IRCClient client = new IRCClient(engine);
 
         TestConsumer<OtherJoinEvent> joinConsumer = new TestConsumer<>();
-        client.addOtherJoinChannelListener(joinConsumer);
+        client.addOtherUserJoinChannelListener(joinConsumer);
 
         engine.sendJoinEvent(new OtherJoinEvent(channelName, nickName));
         assertEquals(channelName, joinConsumer.getAccepted().getChannelName());
@@ -37,7 +37,7 @@ class OtherJoinChannelTest {
         IRCClient client = new IRCClient(engine);
 
         TestConsumer<OtherJoinEvent> joinConsumer = new TestConsumer<>();
-        client.addOtherJoinChannelListener(joinConsumer);
+        client.addOtherUserJoinChannelListener(joinConsumer);
 
         engine.sendJoinEvent(new OtherJoinEvent(channelName, nickName));
         assertEquals(nickName, joinConsumer.getAccepted().getNickName());

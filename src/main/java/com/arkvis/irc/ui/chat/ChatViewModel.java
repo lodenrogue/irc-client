@@ -38,10 +38,10 @@ public class ChatViewModel {
     public void init() {
         client.addConnectionListener(createConnectionResultHandler());
         client.addUserJoinChannelListener(createUserJoinChannelResultHandler());
-        client.addOtherJoinChannelListener(createOtherJoinChannelListener());
+        client.addOtherUserJoinChannelListener(createOtherJoinChannelListener());
+        client.addOtherUserLeaveChannelListener(createOtherLeaveChannelListener());
         client.addChannelMessageListener(createChannelMessageListener());
         client.addSendMessageListener(createSendMessageResultHandler());
-
 
         eventEmitter.registerSelectChannelListener(this::changeToView);
         connectToServer();
@@ -94,12 +94,17 @@ public class ChatViewModel {
     }
 
     private Consumer<OtherJoinEvent> createOtherJoinChannelListener() {
-        return joinEvent -> {
-            updateChatText(
-                    joinEvent.getChannelName(),
-                    SERVER_SENDER,
-                    String.format("%s has joined", joinEvent.getNickName()));
-        };
+        return joinEvent -> updateChatText(
+                joinEvent.getChannelName(),
+                SERVER_SENDER,
+                String.format("%s has joined", joinEvent.getNickName()));
+    }
+
+    private Consumer<OtherLeaveEvent> createOtherLeaveChannelListener() {
+        return leaveEvent -> updateChatText(
+                leaveEvent.getChannelName(),
+                SERVER_SENDER,
+                String.format("%s has quit (%s)", leaveEvent.getNickName(), leaveEvent.getPartingMessage()));
     }
 
     private ResultHandler<ConnectionEvent> createConnectionResultHandler() {
