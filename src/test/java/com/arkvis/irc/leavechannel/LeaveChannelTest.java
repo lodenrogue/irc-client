@@ -12,11 +12,13 @@ class LeaveChannelTest {
 
     private String channelName;
     private String nickName;
+    private String partingMessage;
 
     @BeforeEach
     void setUp() {
         channelName = "TEST_CHANNEL";
         nickName = "TEST_NICK_NAME";
+        partingMessage = "Hasta la vista, baby";
     }
 
     @Test
@@ -27,7 +29,7 @@ class LeaveChannelTest {
         TestConsumer<OtherLeaveEvent> listener = new TestConsumer<>();
         client.addOtherUserLeaveChannelListener(listener);
 
-        engine.sendLeaveChannelEvent(new OtherLeaveEvent(channelName, nickName));
+        engine.sendLeaveChannelEvent(new OtherLeaveEvent(channelName, nickName, partingMessage));
         assertEquals(channelName, listener.getAccepted().getChannelName());
     }
 
@@ -39,7 +41,19 @@ class LeaveChannelTest {
         TestConsumer<OtherLeaveEvent> listener = new TestConsumer<>();
         client.addOtherUserLeaveChannelListener(listener);
 
-        engine.sendLeaveChannelEvent(new OtherLeaveEvent(channelName, nickName));
+        engine.sendLeaveChannelEvent(new OtherLeaveEvent(channelName, nickName, partingMessage));
         assertEquals(nickName, listener.getAccepted().getNickName());
+    }
+
+    @Test
+    void should_returnCorrectPartingMessage_when_otherUserLeavesChannel() {
+        TestOtherUserLeaveChannelEngine engine = new TestOtherUserLeaveChannelEngine();
+        IRCClient client = new IRCClient(engine);
+
+        TestConsumer<OtherLeaveEvent> listener = new TestConsumer<>();
+        client.addOtherUserLeaveChannelListener(listener);
+
+        engine.sendLeaveChannelEvent(new OtherLeaveEvent(channelName, nickName, partingMessage));
+        assertEquals(partingMessage, listener.getAccepted().getPartingMessage());
     }
 }

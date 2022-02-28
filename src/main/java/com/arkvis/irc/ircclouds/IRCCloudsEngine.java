@@ -139,6 +139,9 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private OtherLeaveEvent toOtherLeaveEvent(ChanPartMessage message) {
-        return new OtherLeaveEvent(message.getChannelName(), message.getSource().getNick());
+        return new OtherLeaveEvent(
+                message.getChannelName(),
+                message.getSource().getNick(),
+                message.getPartMsg());
     }
 }
