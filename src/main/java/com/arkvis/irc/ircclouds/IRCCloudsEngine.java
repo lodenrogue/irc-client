@@ -45,6 +45,22 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
+    public void connect(Connection connection, ResultHandler<Server> resultHandler) {
+        String primaryNick = connection.getNicks().get(0);
+        List<String> altNicks = connection.getNicks().subList(1, connection.getNicks().size());
+
+        ServerParameters serverParameters = new ServerParameters(
+                connection.getServerName(),
+                primaryNick,
+                altNicks,
+                REAL_NAME,
+                IDENTITY,
+                IS_SSL_SERVER);
+
+        ircApi.connect(serverParameters, _createConnectCallback(resultHandler));
+    }
+
+    @Override
     public void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler) {
         ircApi.joinChannel(channelName, createUserJoinChannelCallback(resultHandler));
     }
@@ -113,6 +129,12 @@ public class IRCCloudsEngine implements Engine {
                 resultHandler::onError);
     }
 
+    private Callback<IIRCState> _createConnectCallback(ResultHandler<Server> resultHandler) {
+        return createCallback(
+                state -> resultHandler.onSuccess(toServer(state)),
+                resultHandler::onError);
+    }
+
     private <T> Callback<T> createCallback(Consumer<T> onSuccess, Runnable onError) {
         return new Callback<>() {
             @Override
@@ -143,6 +165,10 @@ public class IRCCloudsEngine implements Engine {
 
     private ConnectionEvent toConnection(IIRCState state) {
         return new ConnectionEvent(state.getNickname(), state.getServer().getHostname());
+    }
+
+    private Server toServer(IIRCState state) {
+        return new Server(state.getServer().getHostname());
     }
 
     private OtherJoinEvent toOtherJoinEvent(ChanJoinMessage message) {

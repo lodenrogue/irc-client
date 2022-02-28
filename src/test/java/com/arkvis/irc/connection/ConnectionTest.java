@@ -1,8 +1,10 @@
 package com.arkvis.irc.connection;
 
 import com.arkvis.irc.TestResultHandler;
+import com.arkvis.irc.model.Connection;
 import com.arkvis.irc.model.ConnectionEvent;
 import com.arkvis.irc.model.IRCClient;
+import com.arkvis.irc.model.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +19,17 @@ class ConnectionTest {
     @BeforeEach
     void setUp() {
         serverName = "TEST_SERVER_NAME";
+    }
+
+    @Test
+    void _should_returnCorrectServerName_when_connectingSuccessfully() {
+        TestSuccessfulConnectionEngine engine = new TestSuccessfulConnectionEngine();
+        Connection connection = new Connection(serverName, List.of("nick1", "nick2"));
+        TestResultHandler<Server> resultHandler = new TestResultHandler<>();
+
+        Server.connect(engine, connection, resultHandler);
+        assertEquals(serverName, resultHandler.getAccepted().getName());
+        assertFalse(resultHandler.wasOnErrorCalled());
     }
 
     @Test

@@ -13,6 +13,11 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
+    public void connect(Connection connection, ResultHandler<Server> resultHandler) {
+
+    }
+
+    @Override
     public void joinChannel(String channelName, ResultHandler<UserJoinEvent> resultHandler) {
 
     }
