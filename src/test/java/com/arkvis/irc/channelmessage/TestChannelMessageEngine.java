@@ -32,6 +32,11 @@ public class TestChannelMessageEngine extends AbstractTestEngine {
         messageConsumer = listener;
     }
 
+    @Override
+    public void _sendMessage(String channelName, Message message, ResultHandler<Message> resultHandler) {
+        resultHandler.onSuccess(message);
+    }
+
     public void sendChannelMessage(MessageEvent messageEvent) {
         listener.accept(messageEvent);
     }

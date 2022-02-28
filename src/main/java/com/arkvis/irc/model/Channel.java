@@ -10,6 +10,7 @@ public class Channel {
     private final List<User> users;
     private final List<Message> messages;
 
+    private final Engine engine;
     private final List<Consumer<User>> otherUserJoinChannelListeners;
     private final List<Consumer<Message>> receivedMessageListeners;
 
@@ -18,6 +19,7 @@ public class Channel {
         this.users = new ArrayList<>(users);
         this.messages = new ArrayList<>();
 
+        this.engine = engine;
         otherUserJoinChannelListeners = new ArrayList<>();
         receivedMessageListeners = new ArrayList<>();
 
@@ -39,6 +41,15 @@ public class Channel {
 
     public void addReceiveMessageListener(Consumer<Message> listener) {
         receivedMessageListeners.add(listener);
+    }
+
+    public void sendMessage(Message message, ResultHandler<Message> resultHandler) {
+        engine._sendMessage(name, message, new SimpleResultHandler<>(
+                sentMessage -> {
+                    resultHandler.onSuccess(sentMessage);
+                    addMessage(sentMessage);
+                },
+                resultHandler::onError));
     }
 
     private void addUser(User user) {

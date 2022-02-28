@@ -51,6 +51,19 @@ class ChannelMessageTest {
     }
 
     @Test
+    void _should_returnCorrectMessage_when_sendingChannelMessage() {
+        TestChannelMessageEngine engine = new TestChannelMessageEngine();
+        Server server = TestUtils.connectToServer(engine);
+        Channel channel = TestUtils.joinChannel(server, channelName);
+
+        Message message = new Message(new User(senderNick), messageText);
+        TestResultHandler<Message> messageHandler = new TestResultHandler<>();
+        channel.sendMessage(message, messageHandler);
+
+        assertEquals(messageText, messageHandler.getAccepted().getMessage());
+    }
+
+    @Test
     void should_returnCorrectMessage_when_gettingChannelMessage() {
         TestChannelMessageEngine engine = new TestChannelMessageEngine();
         IRCClient client = new IRCClient(engine);

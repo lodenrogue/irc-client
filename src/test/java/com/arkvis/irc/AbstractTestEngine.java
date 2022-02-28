@@ -61,4 +61,9 @@ public abstract class AbstractTestEngine implements Engine {
     public void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
 
     }
+
+    @Override
+    public void _sendMessage(String channelName, Message message, ResultHandler<Message> resultHandler) {
+
+    }
 }

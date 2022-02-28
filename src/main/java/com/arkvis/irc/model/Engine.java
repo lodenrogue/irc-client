@@ -26,4 +26,6 @@ public interface Engine {
     void addOtherQuitListener(Consumer<OtherQuitEvent> listener);
 
     void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler);
+
+    void _sendMessage(String channelName, Message message, ResultHandler<Message> resultHandler);
 }
