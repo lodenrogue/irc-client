@@ -1,9 +1,6 @@
 package com.arkvis.irc.ui.users;
 
-import com.arkvis.irc.model.OtherJoinEvent;
-import com.arkvis.irc.model.OtherLeaveEvent;
-import com.arkvis.irc.model.ResultHandler;
-import com.arkvis.irc.model.UserJoinEvent;
+import com.arkvis.irc.model.*;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
 import com.arkvis.irc.ui.SimpleResultHandler;
@@ -26,6 +23,8 @@ public class UsersViewModel {
         IRC.getClient().addUserJoinChannelListener(createUserJoinChannelResultHandler());
         IRC.getClient().addOtherUserJoinChannelListener(createOtherJoinChannelListener());
         IRC.getClient().addOtherUserLeaveChannelListener(createOtherLeaveChannelListener());
+        IRC.getClient().addOtherUserQuitListener(createOtherQuitListener());
+
         EventEmitter.getInstance().registerSelectChannelListener(createSelectChannelListener());
     }
 
@@ -57,6 +56,21 @@ public class UsersViewModel {
                 updateUsers(channelUsers);
             }
         };
+    }
+
+    private Consumer<OtherQuitEvent> createOtherQuitListener() {
+        return quitEvent -> channelUsersMap.keySet().stream()
+                .filter(channelName -> channelContainsUser(channelName, quitEvent.getNickName()))
+                .forEach(channelName -> removeUser(channelName, quitEvent));
+    }
+
+    private void removeUser(String channelName, OtherQuitEvent event) {
+        channelUsersMap.get(channelName).remove(event.getNickName());
+        EventEmitter.getInstance().emitOtherUserQuitEvent(channelName, event);
+    }
+
+    private boolean channelContainsUser(String channelName, String nickName) {
+        return channelUsersMap.get(channelName).contains(nickName);
     }
 
     private Consumer<String> createSelectChannelListener() {

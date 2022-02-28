@@ -10,6 +10,7 @@ public class IRCClient {
     private final List<ResultHandler<UserJoinEvent>> userJoinChannelListeners;
     private final List<Consumer<OtherJoinEvent>> otherJoinChannelListeners;
     private final List<Consumer<OtherLeaveEvent>> otherLeaveChannelListeners;
+    private final List<Consumer<OtherQuitEvent>> otherQuitListeners;
     private final List<Consumer<MessageEvent>> channelMessageListeners;
     private final List<ResultHandler<MessageEvent>> sendMessageListeners;
 
@@ -19,12 +20,14 @@ public class IRCClient {
         userJoinChannelListeners = new ArrayList<>();
         otherJoinChannelListeners = new ArrayList<>();
         otherLeaveChannelListeners = new ArrayList<>();
+        otherQuitListeners = new ArrayList<>();
         channelMessageListeners = new ArrayList<>();
         sendMessageListeners = new ArrayList<>();
 
         engine.addChannelMessageListener(this::notifyChannelMessageListeners);
         engine.addOtherJoinChannelListener(this::notifyOtherJoinChannelListeners);
         engine.addOtherLeaveChannelListener(this::notifyOtherLeaveChannelListeners);
+        engine.addOtherQuitListener(this::notifyOtherQuitListeners);
     }
 
     public void connect(String serverName, List<String> nicks) {
@@ -63,6 +66,10 @@ public class IRCClient {
         otherLeaveChannelListeners.add(listener);
     }
 
+    public void addOtherUserQuitListener(Consumer<OtherQuitEvent> listener) {
+        otherQuitListeners.add(listener);
+    }
+
     private <T> ResultHandler<T> createResultHandler(List<ResultHandler<T>> listeners) {
         return new ResultHandler<>() {
             @Override
@@ -87,5 +94,9 @@ public class IRCClient {
 
     private void notifyOtherLeaveChannelListeners(OtherLeaveEvent event) {
         otherLeaveChannelListeners.forEach(listener -> listener.accept(event));
+    }
+
+    private void notifyOtherQuitListeners(OtherQuitEvent event) {
+        otherQuitListeners.forEach(listener -> listener.accept(event));
     }
 }

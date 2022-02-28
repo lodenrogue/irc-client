@@ -33,6 +33,11 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
+    public void addOtherQuitListener(Consumer<OtherQuitEvent> listener) {
+
+    }
+
+    @Override
     public void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
 
     }

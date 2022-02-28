@@ -8,7 +8,6 @@ import com.ircclouds.irc.api.domain.IRCServer;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.IVariousMessageListener;
-import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
 
 import java.util.Arrays;

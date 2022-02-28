@@ -9,6 +9,7 @@ import com.ircclouds.irc.api.domain.IRCUser;
 import com.ircclouds.irc.api.domain.messages.ChanJoinMessage;
 import com.ircclouds.irc.api.domain.messages.ChanPartMessage;
 import com.ircclouds.irc.api.domain.messages.ChannelPrivMsg;
+import com.ircclouds.irc.api.domain.messages.QuitMessage;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
 
@@ -84,6 +85,16 @@ public class IRCCloudsEngine implements Engine {
         });
     }
 
+    @Override
+    public void addOtherQuitListener(Consumer<OtherQuitEvent> listener) {
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onUserQuit(QuitMessage message) {
+                listener.accept(toOtherQuitEvent(message));
+            }
+        });
+    }
+
     private Callback<String> createSendMessageCallback(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
         return createCallback(
                 response -> resultHandler.onSuccess(new MessageEvent(channelName, message)),
@@ -143,5 +154,9 @@ public class IRCCloudsEngine implements Engine {
                 message.getChannelName(),
                 message.getSource().getNick(),
                 message.getPartMsg());
+    }
+
+    private OtherQuitEvent toOtherQuitEvent(QuitMessage message) {
+        return new OtherQuitEvent(message.getSource().getNick(), message.getQuitMsg());
     }
 }

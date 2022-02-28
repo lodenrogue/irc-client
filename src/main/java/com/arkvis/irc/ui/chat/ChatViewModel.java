@@ -44,6 +44,7 @@ public class ChatViewModel {
         client.addSendMessageListener(createSendMessageResultHandler());
 
         eventEmitter.registerSelectChannelListener(this::changeToView);
+        eventEmitter.registerOtherUserQuitListener(this::onOtherUserQuit);
         connectToServer();
     }
 
@@ -169,5 +170,12 @@ public class ChatViewModel {
     private String getCurrentText(String viewName) {
         String text = chatViews.get(viewName);
         return Objects.isNull(text) ? "" : text;
+    }
+
+    private void onOtherUserQuit(String channelName, OtherQuitEvent event) {
+        updateChatText(
+                channelName,
+                SERVER_SENDER,
+                String.format("%s has quit (%s)", event.getNickName(), event.getMessage()));
     }
 }
