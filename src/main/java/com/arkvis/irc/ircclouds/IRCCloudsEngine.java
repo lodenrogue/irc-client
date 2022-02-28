@@ -168,7 +168,8 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private Server toServer(IIRCState state) {
-        return new Server(state.getServer().getHostname());
+        User user = new User(state.getNickname());
+        return new Server(state.getServer().getHostname(), user);
     }
 
     private OtherJoinEvent toOtherJoinEvent(ChanJoinMessage message) {

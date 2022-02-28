@@ -15,16 +15,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConnectionTest {
 
     private String serverName;
+    private String nickName;
+    private List<String> nicks;
 
     @BeforeEach
     void setUp() {
         serverName = "TEST_SERVER_NAME";
+        nickName = "TEST_NICK";
+        nicks = List.of(nickName, "SECOND_NICK");
     }
 
     @Test
     void _should_returnCorrectServerName_when_connectingSuccessfully() {
         TestSuccessfulConnectionEngine engine = new TestSuccessfulConnectionEngine();
-        Connection connection = new Connection(serverName, List.of("nick1", "nick2"));
+        Connection connection = new Connection(serverName, nicks);
         TestResultHandler<Server> resultHandler = new TestResultHandler<>();
 
         Server.connect(engine, connection, resultHandler);
@@ -33,9 +37,19 @@ class ConnectionTest {
     }
 
     @Test
+    void _should_returnCorrectNickName_when_connectingSuccessfully() {
+        TestSuccessfulConnectionEngine engine = new TestSuccessfulConnectionEngine();
+        Connection connection = new Connection(serverName, nicks);
+        TestResultHandler<Server> resultHandler = new TestResultHandler<>();
+
+        Server.connect(engine, connection, resultHandler);
+        assertEquals(nickName, resultHandler.getAccepted().getPrimaryUser().getNickName());
+    }
+
+    @Test
     void _should_adviseOfError_when_connectionFailed() {
         TestFailedConnectionEngine engine = new TestFailedConnectionEngine();
-        Connection connection = new Connection(serverName, List.of("nick1", "nick2"));
+        Connection connection = new Connection(serverName, nicks);
         TestResultHandler<Server> resultHandler = new TestResultHandler<>();
 
         Server.connect(engine, connection, resultHandler);

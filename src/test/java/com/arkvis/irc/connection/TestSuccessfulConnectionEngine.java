@@ -1,10 +1,7 @@
 package com.arkvis.irc.connection;
 
 import com.arkvis.irc.AbstractTestEngine;
-import com.arkvis.irc.model.Connection;
-import com.arkvis.irc.model.ConnectionEvent;
-import com.arkvis.irc.model.ResultHandler;
-import com.arkvis.irc.model.Server;
+import com.arkvis.irc.model.*;
 
 import java.util.List;
 
@@ -27,6 +24,7 @@ public class TestSuccessfulConnectionEngine extends AbstractTestEngine {
 
     @Override
     public void connect(Connection connection, ResultHandler<Server> resultHandler) {
-        resultHandler.onSuccess(new Server(connection.getServerName()));
+        User user = new User(connection.getNicks().get(0));
+        resultHandler.onSuccess(new Server(connection.getServerName(), user));
     }
 }
