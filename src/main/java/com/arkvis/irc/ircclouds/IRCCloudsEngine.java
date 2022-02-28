@@ -235,6 +235,7 @@ public class IRCCloudsEngine implements Engine {
     }
 
     private Message toMessage(ChannelPrivMsg message) {
-        return new Message(message.getText());
+        User sender = new User(message.getSource().getNick());
+        return new Message(sender, message.getText());
     }
 }
