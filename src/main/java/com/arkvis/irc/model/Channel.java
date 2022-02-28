@@ -15,4 +15,8 @@ public class Channel {
     public String getName() {
         return name;
     }
+
+    public List<User> getUsers() {
+        return users;
+    }
 }

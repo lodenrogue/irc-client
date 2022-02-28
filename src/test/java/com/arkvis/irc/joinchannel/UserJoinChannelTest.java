@@ -30,9 +30,19 @@ class UserJoinChannelTest {
         assertEquals(channelName, resultHandler.getAccepted().getName());
     }
 
-    // TODO test for channel size
+    @Test
+    void _should_returnUsersList_when_successfullyJoiningChannel() {
+        List<User> users = List.of(new User("USER1"), new User("USER2"));
 
-    //TODO test for users size
+        Server server = connectToServer(new TestSuccessfulJoinChannelEngine(users));
+        TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
+        server.addUserJoinChannelListener(resultHandler);
+
+        server.joinChannel(channelName);
+        assertEquals(users, resultHandler.getAccepted().getUsers());
+    }
+
+    // TODO test for channel size
 
     @Test
     void should_returnCorrectChannelName_when_successfullyJoiningChannel() {

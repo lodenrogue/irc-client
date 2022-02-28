@@ -3,12 +3,17 @@ package com.arkvis.irc.joinchannel;
 import com.arkvis.irc.AbstractTestEngine;
 import com.arkvis.irc.model.*;
 
-import java.util.Collections;
+import java.util.List;
 
 public class TestSuccessfulJoinChannelEngine extends AbstractTestEngine {
     private UserJoinEvent joinEvent;
+    private List<User> users;
 
     public TestSuccessfulJoinChannelEngine() {
+    }
+
+    public TestSuccessfulJoinChannelEngine(List<User> users) {
+        this.users = users;
     }
 
     public TestSuccessfulJoinChannelEngine(UserJoinEvent joinEvent) {
@@ -28,6 +33,6 @@ public class TestSuccessfulJoinChannelEngine extends AbstractTestEngine {
 
     @Override
     public void _joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
-        resultHandler.onSuccess(new Channel(channelName, Collections.emptyList()));
+        resultHandler.onSuccess(new Channel(channelName, users));
     }
 }
