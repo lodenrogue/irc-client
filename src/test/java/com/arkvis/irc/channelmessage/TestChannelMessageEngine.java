@@ -1,7 +1,7 @@
 package com.arkvis.irc.channelmessage;
 
-import com.arkvis.irc.model.MessageEvent;
 import com.arkvis.irc.AbstractTestEngine;
+import com.arkvis.irc.model.MessageEvent;
 
 import java.util.function.Consumer;
 

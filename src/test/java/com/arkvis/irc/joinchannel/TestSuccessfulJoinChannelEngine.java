@@ -33,6 +33,6 @@ public class TestSuccessfulJoinChannelEngine extends AbstractTestEngine {
 
     @Override
     public void _joinChannel(String channelName, ResultHandler<Channel> resultHandler) {
-        resultHandler.onSuccess(new Channel(channelName, users));
+        resultHandler.onSuccess(new Channel(this, channelName, users));
     }
 }
