@@ -5,7 +5,7 @@ import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
-import com.arkvis.irc.ui.SimpleResultHandler;
+import com.arkvis.irc.model.SimpleResultHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;

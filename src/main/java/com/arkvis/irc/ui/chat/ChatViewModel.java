@@ -3,7 +3,7 @@ package com.arkvis.irc.ui.chat;
 import com.arkvis.irc.model.*;
 import com.arkvis.irc.ui.EventEmitter;
 import com.arkvis.irc.ui.IRC;
-import com.arkvis.irc.ui.SimpleResultHandler;
+import com.arkvis.irc.model.SimpleResultHandler;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

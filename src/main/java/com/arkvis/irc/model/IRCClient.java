@@ -71,17 +71,9 @@ public class IRCClient {
     }
 
     private <T> ResultHandler<T> createResultHandler(List<ResultHandler<T>> listeners) {
-        return new ResultHandler<>() {
-            @Override
-            public void onSuccess(T t) {
-                listeners.forEach(listener -> listener.onSuccess(t));
-            }
-
-            @Override
-            public void onError() {
-                listeners.forEach(ResultHandler::onError);
-            }
-        };
+        return new SimpleResultHandler<>(
+                (t) -> listeners.forEach(listener -> listener.onSuccess(t)),
+                () -> listeners.forEach(ResultHandler::onError));
     }
 
     private void notifyChannelMessageListeners(MessageEvent event) {

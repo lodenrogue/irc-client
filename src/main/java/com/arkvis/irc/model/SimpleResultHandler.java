@@ -1,4 +1,4 @@
-package com.arkvis.irc.ui;
+package com.arkvis.irc.model;
 
 import com.arkvis.irc.model.ResultHandler;
 
