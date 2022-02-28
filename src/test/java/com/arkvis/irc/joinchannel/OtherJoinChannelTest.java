@@ -34,8 +34,8 @@ class OtherJoinChannelTest {
 
         TestConsumer<User> otherUserJoinChannelListener = new TestConsumer<>();
         channel.addOtherUserJoinChannelListener(otherUserJoinChannelListener);
-        engine.sendJoinEvent(new User(nickName));
 
+        engine.sendJoinEvent(new User(nickName));
         assertEquals(nickName, otherUserJoinChannelListener.getAccepted().getNickName());
     }
 

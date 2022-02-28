@@ -58,9 +58,43 @@ class ChannelMessageTest {
 
         Message message = new Message(new User(senderNick), messageText);
         TestResultHandler<Message> messageHandler = new TestResultHandler<>();
-        channel.sendMessage(message, messageHandler);
 
+        channel.sendMessage(message, messageHandler);
         assertEquals(messageText, messageHandler.getAccepted().getMessage());
+    }
+
+    @Test
+    void _should_returnCorrectMessages_when_receivingMultipleMessages() {
+        TestChannelMessageEngine engine = new TestChannelMessageEngine();
+        Server server = TestUtils.connectToServer(engine);
+        Channel channel = TestUtils.joinChannel(server, channelName);
+
+        String firstMessage = "FIRST_MESSAGE";
+        String secondMessage = "SECOND_MESSAGE";
+
+        User sender = new User(senderNick);
+        engine.sendChannelMessage(new Message(sender, firstMessage));
+        engine.sendChannelMessage(new Message(sender, secondMessage));
+
+        assertEquals(firstMessage, channel.getMessages().get(0).getMessage());
+        assertEquals(secondMessage, channel.getMessages().get(1).getMessage());
+    }
+
+    @Test
+    void _should_returnCorrectMessages_when_sendingMultipleMessages() {
+        TestChannelMessageEngine engine = new TestChannelMessageEngine();
+        Server server = TestUtils.connectToServer(engine);
+        Channel channel = TestUtils.joinChannel(server, channelName);
+
+        String firstMessage = "FIRST_MESSAGE";
+        String secondMessage = "SECOND_MESSAGE";
+
+        User sender = new User(senderNick);
+        channel.sendMessage(new Message(sender, firstMessage), new TestResultHandler<>());
+        channel.sendMessage(new Message(sender, secondMessage), new TestResultHandler<>());
+
+        assertEquals(firstMessage, channel.getMessages().get(0).getMessage());
+        assertEquals(secondMessage, channel.getMessages().get(1).getMessage());
     }
 
     @Test

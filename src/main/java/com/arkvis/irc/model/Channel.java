@@ -35,6 +35,10 @@ public class Channel {
         return users;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
     public void addOtherUserJoinChannelListener(Consumer<User> listener) {
         otherUserJoinChannelListeners.add(listener);
     }
