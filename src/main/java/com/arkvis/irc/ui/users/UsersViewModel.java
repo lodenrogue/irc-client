@@ -1,5 +1,6 @@
 package com.arkvis.irc.ui.users;
 
+import com.arkvis.irc.model.OtherJoinEvent;
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.ui.EventEmitter;
@@ -14,6 +15,7 @@ import java.util.function.Consumer;
 
 public class UsersViewModel {
     private final Map<String, List<String>> channelUsersMap;
+    private String currentChannel;
     private final ObservableList<String> users;
 
     public UsersViewModel() {
@@ -21,6 +23,7 @@ public class UsersViewModel {
         users = FXCollections.observableArrayList();
 
         IRC.getClient().addUserJoinChannelListener(createUserJoinChannelResultHandler());
+        IRC.getClient().addOtherJoinChannelListener(createOtherJoinChannelListener());
         EventEmitter.getInstance().registerSelectChannelListener(createSelectChannelListener());
     }
 
@@ -28,12 +31,25 @@ public class UsersViewModel {
         return users;
     }
 
-    private Consumer<String> createSelectChannelListener() {
-        return channelName -> updateUsers(channelUsersMap.getOrDefault(channelName, Collections.emptyList()));
+    private Consumer<OtherJoinEvent> createOtherJoinChannelListener() {
+        return joinEvent -> {
+            String channelName = joinEvent.getChannelName();
+
+            List<String> channelUsers = channelUsersMap.get(channelName);
+            channelUsers.add(joinEvent.getNickName());
+            channelUsers.sort(String::compareToIgnoreCase);
+
+            if (currentChannel.equals(channelName)) {
+                updateUsers(channelUsers);
+            }
+        };
     }
 
-    private void updateUsers(List<String> newUsers) {
-        Platform.runLater(() -> users.setAll(newUsers));
+    private Consumer<String> createSelectChannelListener() {
+        return channelName -> {
+            currentChannel = channelName;
+            updateUsers(channelUsersMap.getOrDefault(channelName, Collections.emptyList()));
+        };
     }
 
     private ResultHandler<UserJoinEvent> createUserJoinChannelResultHandler() {
@@ -46,6 +62,11 @@ public class UsersViewModel {
         channelUsers.sort(String::compareToIgnoreCase);
 
         channelUsersMap.put(joinEvent.getChannelName(), channelUsers);
+        currentChannel = joinEvent.getChannelName();
         updateUsers(channelUsers);
+    }
+
+    private void updateUsers(List<String> newUsers) {
+        Platform.runLater(() -> users.setAll(newUsers));
     }
 }

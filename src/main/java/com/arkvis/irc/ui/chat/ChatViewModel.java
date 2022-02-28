@@ -119,10 +119,10 @@ public class ChatViewModel {
     private void onUserJoinChannelSuccess(UserJoinEvent joinEvent) {
         String channelName = joinEvent.getChannelName();
         chatViews.putIfAbsent(channelName, "");
-        currentChatView = channelName;
 
         String message = String.format("Successfully joined channel %s", channelName);
-        updateChatText(currentChatView, SERVER_SENDER, message);
+        updateChatText(channelName, SERVER_SENDER, message);
+        changeToView(channelName);
     }
 
     private void onConnectionSuccess(ConnectionEvent connectionEvent) {
@@ -152,10 +152,6 @@ public class ChatViewModel {
                 message);
 
         chatViews.put(viewName, newText);
-
-        if (viewName.equals(currentChatView)) {
-            chatTextListeners.forEach(listener -> listener.accept(newText));
-        }
     }
 
     private String getCurrentText(String viewName) {
