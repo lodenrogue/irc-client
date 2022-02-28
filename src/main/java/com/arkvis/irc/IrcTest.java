@@ -33,13 +33,6 @@ public class IrcTest {
             }
         });
 
-        ircApi.addListener(new VariousMessageListenerAdapter() {
-            @Override
-            public void onChannelMessage(ChannelPrivMsg aMsg) {
-                super.onChannelMessage(aMsg);
-            }
-        });
-
         ircApi.addListener(new IVariousMessageListener() {
             @Override
             public void onChannelMessage(ChannelPrivMsg aMsg) {

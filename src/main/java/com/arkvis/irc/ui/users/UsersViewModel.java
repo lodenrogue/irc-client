@@ -1,6 +1,7 @@
 package com.arkvis.irc.ui.users;
 
 import com.arkvis.irc.model.OtherJoinEvent;
+import com.arkvis.irc.model.OtherLeaveEvent;
 import com.arkvis.irc.model.ResultHandler;
 import com.arkvis.irc.model.UserJoinEvent;
 import com.arkvis.irc.ui.EventEmitter;
@@ -24,6 +25,7 @@ public class UsersViewModel {
 
         IRC.getClient().addUserJoinChannelListener(createUserJoinChannelResultHandler());
         IRC.getClient().addOtherUserJoinChannelListener(createOtherJoinChannelListener());
+        IRC.getClient().addOtherUserLeaveChannelListener(createOtherLeaveChannelListener());
         EventEmitter.getInstance().registerSelectChannelListener(createSelectChannelListener());
     }
 
@@ -38,6 +40,18 @@ public class UsersViewModel {
             List<String> channelUsers = channelUsersMap.get(channelName);
             channelUsers.add(joinEvent.getNickName());
             channelUsers.sort(String::compareToIgnoreCase);
+
+            if (currentChannel.equals(channelName)) {
+                updateUsers(channelUsers);
+            }
+        };
+    }
+
+    private Consumer<OtherLeaveEvent> createOtherLeaveChannelListener() {
+        return leaveEvent -> {
+            String channelName = leaveEvent.getChannelName();
+            List<String> channelUsers = channelUsersMap.get(channelName);
+            channelUsers.remove(leaveEvent.getNickName());
 
             if (currentChannel.equals(channelName)) {
                 updateUsers(channelUsers);
