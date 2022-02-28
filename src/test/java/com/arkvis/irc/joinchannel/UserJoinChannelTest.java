@@ -54,7 +54,18 @@ class UserJoinChannelTest {
         assertTrue(resultHandler.wasOnErrorCalled());
     }
 
-    // TODO test for channel size
+    @Test
+    void _should_returnCorrectChannels_when_successfullyJoiningChannel() {
+        String firstChannel = "FIRST_CHANNEL";
+        String secondChannel = "SECOND_CHANNEL";
+
+        Server server = connectToServer(new TestSuccessfulJoinChannelEngine(Collections.emptyList()));
+        server.joinChannel(firstChannel);
+        server.joinChannel(secondChannel);
+
+        assertEquals(firstChannel, server.getChannels().get(0).getName());
+        assertEquals(secondChannel, server.getChannels().get(1).getName());
+    }
 
     @Test
     void should_returnCorrectChannelName_when_successfullyJoiningChannel() {

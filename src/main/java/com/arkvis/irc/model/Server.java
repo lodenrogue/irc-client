@@ -1,12 +1,14 @@
 package com.arkvis.irc.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Server {
     private final Engine engine;
     private final String name;
     private final User primaryUser;
+    private final List<Channel> channels;
 
     private final List<ResultHandler<Channel>> userJoinChannelListeners;
 
@@ -18,6 +20,8 @@ public class Server {
         this.engine = engine;
         this.name = name;
         this.primaryUser = primaryUser;
+
+        channels = new ArrayList<>();
         userJoinChannelListeners = new ArrayList<>();
     }
 
@@ -34,12 +38,17 @@ public class Server {
     }
 
     public void joinChannel(String channelName) {
-        engine._joinChannel(channelName, createResultHandler(userJoinChannelListeners));
+        engine._joinChannel(channelName, new SimpleResultHandler<>(
+                this::addChannel,
+                () -> userJoinChannelListeners.forEach(ResultHandler::onError)));
     }
 
-    private <T> ResultHandler<T> createResultHandler(List<ResultHandler<T>> listeners) {
-        return new SimpleResultHandler<>(
-                (t) -> listeners.forEach(listener -> listener.onSuccess(t)),
-                () -> listeners.forEach(ResultHandler::onError));
+    private void addChannel(Channel channel) {
+        channels.add(channel);
+        userJoinChannelListeners.forEach(listener -> listener.onSuccess(channel));
+    }
+
+    public List<Channel> getChannels() {
+        return Collections.unmodifiableList(channels);
     }
 }
