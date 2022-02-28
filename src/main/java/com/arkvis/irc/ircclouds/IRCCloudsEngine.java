@@ -7,6 +7,7 @@ import com.ircclouds.irc.api.IRCApiImpl;
 import com.ircclouds.irc.api.domain.IRCChannel;
 import com.ircclouds.irc.api.domain.IRCUser;
 import com.ircclouds.irc.api.domain.messages.ChanJoinMessage;
+import com.ircclouds.irc.api.domain.messages.ChanPartMessage;
 import com.ircclouds.irc.api.domain.messages.ChannelPrivMsg;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.state.IIRCState;
@@ -73,6 +74,16 @@ public class IRCCloudsEngine implements Engine {
 
     }
 
+    @Override
+    public void addOtherLeaveChannelListener(Consumer<OtherLeaveEvent> listener) {
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onChannelPart(ChanPartMessage message) {
+                listener.accept(toOtherLeaveEvent(message));
+            }
+        });
+    }
+
     private Callback<String> createSendMessageCallback(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
         return createCallback(
                 response -> resultHandler.onSuccess(new MessageEvent(channelName, message)),
@@ -125,5 +136,9 @@ public class IRCCloudsEngine implements Engine {
 
     private OtherJoinEvent toOtherJoinEvent(ChanJoinMessage message) {
         return new OtherJoinEvent(message.getChannelName(), message.getSource().getNick());
+    }
+
+    private OtherLeaveEvent toOtherLeaveEvent(ChanPartMessage message) {
+        return new OtherLeaveEvent(message.getChannelName());
     }
 }

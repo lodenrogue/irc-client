@@ -28,6 +28,11 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
+    public void addOtherLeaveChannelListener(Consumer<OtherLeaveEvent> listener) {
+
+    }
+
+    @Override
     public void sendMessage(String channelName, String message, ResultHandler<MessageEvent> resultHandler) {
 
     }
