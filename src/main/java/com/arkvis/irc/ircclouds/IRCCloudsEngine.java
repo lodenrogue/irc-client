@@ -86,6 +86,18 @@ public class IRCCloudsEngine implements Engine {
     }
 
     @Override
+    public void _addReceiveChannelMessageListener(String channelName, Consumer<Message> listener) {
+        ircApi.addListener(new VariousMessageListenerAdapter() {
+            @Override
+            public void onChannelMessage(ChannelPrivMsg message) {
+                if (channelName.equals(message.getChannelName())) {
+                    listener.accept(toMessage(message));
+                }
+            }
+        });
+    }
+
+    @Override
     public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
         ircApi.addListener(new VariousMessageListenerAdapter() {
             @Override
@@ -93,7 +105,6 @@ public class IRCCloudsEngine implements Engine {
                 listener.accept(toOtherJoinEvent(message));
             }
         });
-
     }
 
     @Override
@@ -221,5 +232,9 @@ public class IRCCloudsEngine implements Engine {
 
     private User toUser(ChanJoinMessage message) {
         return new User(message.getSource().getNick());
+    }
+
+    private Message toMessage(ChannelPrivMsg message) {
+        return new Message(message.getText());
     }
 }

@@ -33,6 +33,11 @@ public abstract class AbstractTestEngine implements Engine {
     }
 
     @Override
+    public void _addReceiveChannelMessageListener(String channelName, Consumer<Message> listener) {
+
+    }
+
+    @Override
     public void addOtherJoinChannelListener(Consumer<OtherJoinEvent> listener) {
 
     }
