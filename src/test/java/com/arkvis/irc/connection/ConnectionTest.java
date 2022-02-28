@@ -33,6 +33,17 @@ class ConnectionTest {
     }
 
     @Test
+    void _should_adviseOfError_when_connectionFailed() {
+        TestFailedConnectionEngine engine = new TestFailedConnectionEngine();
+        Connection connection = new Connection(serverName, List.of("nick1", "nick2"));
+        TestResultHandler<Server> resultHandler = new TestResultHandler<>();
+
+        Server.connect(engine, connection, resultHandler);
+        assertTrue(resultHandler.wasOnErrorCalled());
+        assertFalse(resultHandler.wasOnSuccessCalled());
+    }
+
+    @Test
     void should_returnCorrectServerName_when_connectingSuccessfully() {
         ConnectionEvent connectionEvent = new ConnectionEvent("nick1", serverName);
         IRCClient client = new IRCClient(new TestSuccessfulConnectionEngine(connectionEvent));
