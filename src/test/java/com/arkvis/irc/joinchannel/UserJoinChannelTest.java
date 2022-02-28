@@ -5,6 +5,7 @@ import com.arkvis.irc.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +23,7 @@ class UserJoinChannelTest {
 
     @Test
     void _should_returnCorrectChannelName_when_successfullyJoiningChannel() {
-        Server server = connectToServer(new TestSuccessfulJoinChannelEngine());
+        Server server = connectToServer(new TestSuccessfulJoinChannelEngine(Collections.emptyList()));
         TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
         server.addUserJoinChannelListener(resultHandler);
 
@@ -40,6 +41,17 @@ class UserJoinChannelTest {
 
         server.joinChannel(channelName);
         assertEquals(users, resultHandler.getAccepted().getUsers());
+    }
+
+    @Test
+    void _should_adviseOfError_when_joiningChannelFailed() {
+        Server server = connectToServer(new TestFailedJoinChannelEngine());
+        TestResultHandler<Channel> resultHandler = new TestResultHandler<>();
+        server.addUserJoinChannelListener(resultHandler);
+
+        server.joinChannel(channelName);
+        assertFalse(resultHandler.wasOnSuccessCalled());
+        assertTrue(resultHandler.wasOnErrorCalled());
     }
 
     // TODO test for channel size
